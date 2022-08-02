@@ -27,7 +27,7 @@ router.post('/sap', async (req, res) => {
   //-------------------------------------
   let output = [];
   try {
-    let db = await mssql.qurey(`select * FROM [SAPData_HES_ISN].[dbo].[tblSAPDetail] where FG_CHARG LIKE '%I228%' and ([FG_CHARG] is not null) and ([PK_STATIME] is null) order by [CUSTOMER] desc`);
+    let db = await mssql.qurey(`select * FROM [SAPData_HES_ISN].[dbo].[tblSAPDetail] where (FG_CHARG LIKE '%I228%' or FG_CHARG LIKE '%I227%') and ([FG_CHARG] is not null) and ([PK_STATIME] is null) order by [CUSTOMER] desc`);
     if (db['recordsets'].length > 0) {
       output = db['recordsets'][0]
     }
