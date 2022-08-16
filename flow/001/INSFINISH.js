@@ -236,9 +236,9 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
     let Item = {};
     let Tool = {};
 
-    if(input[`PCS`] === '1'){
+    if(input[`PCS`] === '1' ||input[`PCS`] === 1){
       Item[nameItem] = { "PSC1": value};
-    }else if(input[`PCS`] === '5'){
+    }else if(input[`PCS`] === '5'||input[`PCS`] === 5){
       Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value };
     }else {
       Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
