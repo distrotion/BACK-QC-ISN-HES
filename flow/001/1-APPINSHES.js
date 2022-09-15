@@ -63,7 +63,7 @@ let APPINSHESdb = {
   "INTERSEC": "",
   "RESULTFORMAT": "",
   "GRAPHTYPE": "",
-  "GAP":"",
+  "GAP": "",
   //---------
   "preview": [],
   "confirmdata": [],
@@ -80,7 +80,7 @@ let APPINSHESdb = {
 
 router.get('/CHECK-APPINSHES', async (req, res) => {
 
-  return  res.json(APPINSHESdb['PO']);
+  return res.json(APPINSHESdb['PO']);
 });
 
 
@@ -99,7 +99,7 @@ router.post('/APPINSHESdb', async (req, res) => {
     finddb = finddbbuffer;
   }
   //-------------------------------------
-  return  res.json(finddb);
+  return res.json(finddb);
 });
 
 router.post('/GETINtoAPPINSHES', async (req, res) => {
@@ -111,88 +111,107 @@ router.post('/GETINtoAPPINSHES', async (req, res) => {
   let output = 'NOK';
   check = APPINSHESdb;
   if (input['PO'] !== undefined && input['CP'] !== undefined && check['PO'] === '') {
-    let dbsap = await mssql.qurey(`select * FROM [SAPData_HES_ISN].[dbo].[tblSAPDetail] where [PO] = ${input['PO']}`);
-    let findcp = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['CP'] });
-    let masterITEMs = await mongodb.find(master_FN, ITEMs, {});
-    let MACHINEmaster = await mongodb.find(master_FN, MACHINE, {});
+    // let dbsap = await mssql.qurey(`select * FROM [SAPData_HES_ISN].[dbo].[tblSAPDetail] where [PO] = ${input['PO']}`);
+    let findPO = await mongodb.findSAP('mongodb://172.23.10.70:27017', "ORDER", "ORDER", {});
 
-    let ItemPickout = [];
-    let ItemPickcodeout = [];
 
-    for (i = 0; i < findcp[0]['FINAL'].length; i++) {
-      for (j = 0; j < masterITEMs.length; j++) {
-        if (findcp[0]['FINAL'][i]['ITEMs'] === masterITEMs[j]['masterID']) {
-          ItemPickout.push(masterITEMs[j]['ITEMs']);
-          ItemPickcodeout.push({ "key": masterITEMs[j]['masterID'], "value": masterITEMs[j]['ITEMs'], "METHOD": findcp[0]['FINAL'][i]['METHOD'] });
+    if (findPO[0][`DATA`] != undefined && findPO[0][`DATA`].length > 0) {
+      let dbsap = ''
+      for (i = 0; i < findPO[0][`DATA`].length; i++) {
+        if (findPO[0][`DATA`][i][`PO`] === input['PO']) {
+          dbsap = findPO[0][`DATA`][i];
+          break;
         }
       }
-    }
 
-    let ItemPickoutP2 = []
-    let ItemPickcodeoutP2 = [];
-    for (i = 0; i < ItemPickcodeout.length; i++) {
-      for (j = 0; j < MACHINEmaster.length; j++) {
-        if (ItemPickcodeout[i]['METHOD'] === MACHINEmaster[j]['masterID']) {
-          if (MACHINEmaster[j]['MACHINE'].includes(NAME_INS)) {
-            ItemPickoutP2.push(ItemPickout[i]);
-            ItemPickcodeoutP2.push(ItemPickcodeout[i]);
+
+      if (dbsap !== '') {
+
+        let findcp = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['CP'] });
+        let masterITEMs = await mongodb.find(master_FN, ITEMs, {});
+        let MACHINEmaster = await mongodb.find(master_FN, MACHINE, {});
+
+        let ItemPickout = [];
+        let ItemPickcodeout = [];
+
+        for (i = 0; i < findcp[0]['FINAL'].length; i++) {
+          for (j = 0; j < masterITEMs.length; j++) {
+            if (findcp[0]['FINAL'][i]['ITEMs'] === masterITEMs[j]['masterID']) {
+              ItemPickout.push(masterITEMs[j]['ITEMs']);
+              ItemPickcodeout.push({ "key": masterITEMs[j]['masterID'], "value": masterITEMs[j]['ITEMs'], "METHOD": findcp[0]['FINAL'][i]['METHOD'] });
+            }
           }
         }
+
+        let ItemPickoutP2 = []
+        let ItemPickcodeoutP2 = [];
+        for (i = 0; i < ItemPickcodeout.length; i++) {
+          for (j = 0; j < MACHINEmaster.length; j++) {
+            if (ItemPickcodeout[i]['METHOD'] === MACHINEmaster[j]['masterID']) {
+              if (MACHINEmaster[j]['MACHINE'].includes(NAME_INS)) {
+                ItemPickoutP2.push(ItemPickout[i]);
+                ItemPickcodeoutP2.push(ItemPickcodeout[i]);
+              }
+            }
+          }
+        }
+
+        APPINSHESdb = {
+          "INS": NAME_INS,
+          "PO": input['PO'] || '',
+          "CP": input['CP'] || '',
+          "MATCP": input['CP'] || '',
+          "QTY": dbsap['QUANTITY'] || '',
+          "PROCESS": dbsap['PROCESS'] || '',
+          "CUSLOT": dbsap['CUSLOTNO'] || '',
+          "TPKLOT": dbsap['FG_CHARG'] || '',
+          "FG": dbsap['FG'] || '',
+          "CUSTOMER": dbsap['CUSTOMER'] || '',
+          "PART": dbsap['PART'] || '',
+          "PARTNAME": dbsap['PARTNAME'] || '',
+          "MATERIAL": dbsap['MATERIAL'] || '',
+          //---new
+          "QUANTITY": dbsap['QUANTITY'] || '',
+          // "PROCESS":dbsap ['PROCESS'] || '',
+          "CUSLOTNO": dbsap['CUSLOTNO'] || '',
+          "FG_CHARG": dbsap['FG_CHARG'] || '',
+          "PARTNAME_PO": dbsap['PARTNAME_PO'] || '',
+          "PART_PO": dbsap['PART_PO'] || '',
+          "CUSTNAME": dbsap['CUSTNAME'] || '',
+          //----------------------
+          "ItemPick": ItemPickoutP2, //---->
+          "ItemPickcode": ItemPickcodeoutP2, //---->
+          "POINTs": "",
+          "PCS": "",
+          "PCSleft": "",
+          "UNIT": "",
+          "INTERSEC": "",
+          "RESULTFORMAT": "",
+          "GRAPHTYPE": "",
+          "GAP": "",
+          //----------------------
+          "preview": [],
+          "confirmdata": [],
+          "ITEMleftUNIT": [],
+          "ITEMleftVALUE": [],
+          //
+          "MeasurmentFOR": "FINAL",
+          "inspectionItem": "", //ITEMpice
+          "inspectionItemNAME": "",
+          "tool": NAME_INS,
+          "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
+          "dateupdatevalue": day,
+        }
+
+        output = 'OK';
+
+
+      } else {
+        output = 'NOK';
       }
-    }
 
-    console.log("------>")
-
-    if (dbsap['recordsets'].length > 0) {
-
-      APPINSHESdb = {
-        "INS": NAME_INS,
-        "PO": input['PO'] || '',
-        "CP": input['CP'] || '',
-        "MATCP": input['CP'] || '',
-        "QTY": dbsap['recordsets'][0][0]['QUANTITY'] || '',
-        "PROCESS": dbsap['recordsets'][0][0]['PROCESS'] || '',
-        "CUSLOT": dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
-        "TPKLOT": dbsap['recordsets'][0][0]['FG_CHARG'] || '',
-        "FG": dbsap['recordsets'][0][0]['FG'] || '',
-        "CUSTOMER": dbsap['recordsets'][0][0]['CUSTOMER'] || '',
-        "PART": dbsap['recordsets'][0][0]['PART'] || '',
-        "PARTNAME": dbsap['recordsets'][0][0]['PARTNAME'] || '',
-        "MATERIAL": dbsap['recordsets'][0][0]['MATERIAL'] || '',
-        //---new
-        "QUANTITY": dbsap['recordsets'][0][0]['QUANTITY'] || '',
-        // "PROCESS":dbsap['recordsets'][0][0]['PROCESS'] || '',
-        "CUSLOTNO": dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
-        "FG_CHARG": dbsap['recordsets'][0][0]['FG_CHARG'] || '',
-        "PARTNAME_PO": dbsap['recordsets'][0][0]['PARTNAME_PO'] || '',
-        "PART_PO": dbsap['recordsets'][0][0]['PART_PO'] || '',
-        "CUSTNAME": dbsap['recordsets'][0][0]['CUSTNAME'] || '',
-        //----------------------
-        "ItemPick": ItemPickoutP2, //---->
-        "ItemPickcode": ItemPickcodeoutP2, //---->
-        "POINTs": "",
-        "PCS": "",
-        "PCSleft": "",
-        "UNIT": "",
-        "INTERSEC": "",
-        "RESULTFORMAT": "",
-        "GRAPHTYPE": "",
-        "GAP":"",
-        //----------------------
-        "preview": [],
-        "confirmdata": [],
-        "ITEMleftUNIT": [],
-        "ITEMleftVALUE": [],
-        //
-        "MeasurmentFOR": "FINAL",
-        "inspectionItem": "", //ITEMpice
-        "inspectionItemNAME": "",
-        "tool": NAME_INS,
-        "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
-        "dateupdatevalue": day,
-      }
-
-      output = 'OK';
+    } else {
+      output = 'NOK';
     }
 
   } else {
@@ -201,7 +220,7 @@ router.post('/GETINtoAPPINSHES', async (req, res) => {
 
 
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/APPINSHES-geteachITEM', async (req, res) => {
@@ -303,7 +322,7 @@ router.post('/APPINSHES-geteachITEM', async (req, res) => {
   }
 
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/APPINSHES-preview', async (req, res) => {
@@ -335,7 +354,7 @@ router.post('/APPINSHES-preview', async (req, res) => {
 
 
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/APPINSHES-confirmdata', async (req, res) => {
@@ -367,7 +386,7 @@ router.post('/APPINSHES-confirmdata', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 
@@ -495,7 +514,7 @@ router.post('/APPINSHES-feedback', async (req, res) => {
   }
 
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/APPINSHES-SETZERO', async (req, res) => {
@@ -540,7 +559,7 @@ router.post('/APPINSHES-SETZERO', async (req, res) => {
       "INTERSEC": "",
       "RESULTFORMAT": "",
       "GRAPHTYPE": "",
-      "GAP":"",
+      "GAP": "",
       //---------
       "preview": [],
       "confirmdata": [],
@@ -560,7 +579,7 @@ router.post('/APPINSHES-SETZERO', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/APPINSHES-CLEAR', async (req, res) => {
@@ -582,7 +601,7 @@ router.post('/APPINSHES-CLEAR', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/APPINSHES-RESETVALUE', async (req, res) => {
@@ -606,7 +625,7 @@ router.post('/APPINSHES-RESETVALUE', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 //"value":[],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
@@ -701,7 +720,7 @@ router.post('/APPINSHES-FINISH', async (req, res) => {
   }
 
   //-------------------------------------
-  return  res.json(APPINSHESdb);
+  return res.json(APPINSHESdb);
 });
 
 
@@ -768,7 +787,7 @@ router.post('/APPINSHES-FINISH-APR', async (req, res) => {
 
 
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 
