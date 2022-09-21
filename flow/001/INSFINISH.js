@@ -240,8 +240,10 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
       Item[nameItem] = { "PSC1": value};
     }else if(input[`PCS`] === '5'||input[`PCS`] === 5){
       Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value };
-    }else {
+    }else if (input[`PCS`] === '10' ||input[`PCS`] === 10){
       Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
+    }else if (input[`PCS`] === '10' ||input[`PCS`] === 10){
+      Item[nameItem] = { "PSC1": value};
     }
 
     // Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
