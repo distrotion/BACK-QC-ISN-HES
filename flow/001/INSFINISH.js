@@ -236,13 +236,15 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
     let Item = {};
     let Tool = {};
 
+    console.log(input[`PCS`])
+
     if(input[`PCS`] === '1' ||input[`PCS`] === 1){
       Item[nameItem] = { "PSC1": value};
     }else if(input[`PCS`] === '5'||input[`PCS`] === 5){
       Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value };
-    }else if (input[`PCS`] === '10' ||input[`PCS`] === 10){
+    }else if(input[`PCS`] === '10'||input[`PCS`] === 10){
       Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
-    }else if (input[`PCS`] === '10' ||input[`PCS`] === 10){
+    }else{
       Item[nameItem] = { "PSC1": value};
     }
 
@@ -322,8 +324,10 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
         Item[nameItem] = { "PSC1": value};
       }else if(input[`PCS`] === '5'||input[`PCS`] === 5){
         Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value };
-      }else {
+      }else if(input[`PCS`] === '10'||input[`PCS`] === 10){
         Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
+      }else{
+        Item[nameItem] = { "PSC1": value};
       }
       // Item[nameItem] = {  "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
       // outputs=[out_S2_1,out_S2_2]
@@ -355,7 +359,17 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
         let Tool = {};
         let FOR = input_S3_1[nameFOR];
 
-        Item[nameItem] = {  "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value };
+        if(input[`PCS`] === '1' ||input[`PCS`] === 1){
+          Item[nameItem] = { "PSC1": value};
+        }else if(input[`PCS`] === '5'||input[`PCS`] === 5){
+          Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value };
+        }else if(input[`PCS`] === '10'||input[`PCS`] === 10){
+          Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
+        }else{
+          Item[nameItem] = { "PSC1": value};
+        }
+
+        // Item[nameItem] = {  "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value };
         input_S3_1[nameFOR][nameTool] = Item;
         let out_S3_1 = { PO: input_S3_2.PO };
         let out_S3_2 = { $set: input_S3_1 }
