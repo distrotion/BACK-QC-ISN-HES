@@ -76,6 +76,8 @@ let APPINSHESdb = {
   "tool": NAME_INS,
   "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
   "dateupdatevalue": day,
+  //
+  "PIC": "",
 }
 
 router.get('/CHECK-APPINSHES', async (req, res) => {
@@ -157,6 +159,14 @@ router.post('/GETINtoAPPINSHES', async (req, res) => {
             }
           }
         }
+        var picS = "";
+        // console.log(findcp[0]['Pimg'])
+        if(findcp.length >0){
+          if(findcp[0]['Pimg'] !== undefined ){
+            picS = `${findcp[0]['Pimg'][`P1`]}`
+          }
+          
+        }
 
         APPINSHESdb = {
           "INS": NAME_INS,
@@ -205,6 +215,8 @@ router.post('/GETINtoAPPINSHES', async (req, res) => {
           "tool": NAME_INS,
           "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
           "dateupdatevalue": day,
+          //
+          "PIC": picS,
         }
 
         output = 'OK';
@@ -576,6 +588,8 @@ router.post('/APPINSHES-SETZERO', async (req, res) => {
       "tool": NAME_INS,
       "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
       "dateupdatevalue": day,
+      //
+      "PIC": "",
     }
     output = 'OK';
   }

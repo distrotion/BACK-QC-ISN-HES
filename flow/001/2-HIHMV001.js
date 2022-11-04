@@ -81,6 +81,8 @@ let HIHMV001db = {
   "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
   "dateupdatevalue": day,
   "INTERSEC_ERR": 0,
+  //
+  "PIC": "",
 }
 
 
@@ -167,6 +169,14 @@ router.post('/GETINtoHIHMV001', async (req, res) => {
             }
           }
         }
+        var picS = "";
+        // console.log(findcp[0]['Pimg'])
+        if(findcp.length >0){
+          if(findcp[0]['Pimg'] !== undefined ){
+            picS = `${findcp[0]['Pimg'][`P1`]}`
+          }
+          
+        }
 
 
 
@@ -221,6 +231,8 @@ router.post('/GETINtoHIHMV001', async (req, res) => {
           "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
           "dateupdatevalue": day,
           "INTERSEC_ERR": 0,
+          //
+          "PIC": picS,
         }
 
         output = 'OK';
@@ -748,6 +760,8 @@ router.post('/HIHMV001-SETZERO', async (req, res) => {
       "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
       "dateupdatevalue": day,
       "INTERSEC_ERR": 0,
+      //
+      "PIC": "",
     }
     output = 'OK';
   }
