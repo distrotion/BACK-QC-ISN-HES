@@ -18,6 +18,7 @@ let MACHINE = 'MACHINE';
 
 //-----------------
 
+const d = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });;
 let day = d;
 
 Number.prototype.pad = function (n) {
