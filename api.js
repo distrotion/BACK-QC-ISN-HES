@@ -14,7 +14,8 @@ router.use(require("./flow/001/7-LCRUVS001"))
 router.use(require("./flow/001/INSFINISH"))
 router.use(require("./flow/001/cleardata"))
 router.use(require("./flow/001/GRAPHMASTER"))
-//
+router.use(require("./flow/001/reportlist"))
+//reportlist
 //INSFINISH
 // router.use(require("./flow/004/flow004"))
 // router.use(require("./flow/005/flow005"))
