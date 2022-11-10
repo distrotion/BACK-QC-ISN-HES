@@ -127,7 +127,9 @@ router.post('/CopyReport', async (req, res) => {
       }
 
       if (newdataHEAD[`CP`] != undefined) {
-        let origianlDB = await mongodb.find(MAIN_DATA, MAIN, { "PO": input[`original`] });
+        let testDB = await mongodb.find(MAIN_DATA, MAIN, { "PO": input[`new`] });
+        if(testDB.length ===0){
+          let origianlDB = await mongodb.find(MAIN_DATA, MAIN, { "PO": input[`original`] });
         let NewMATCP = await mongodb.find(PATTERN, PATTERN_01, { "CP": newdataHEAD[`CP`] });
 
         if (NewMATCP.length > 0 && origianlDB.length >0) {
@@ -179,11 +181,9 @@ router.post('/CopyReport', async (req, res) => {
           output = "OK";
         }
 
-
-
+        }
+        
       }
-
-
 
     }
 
