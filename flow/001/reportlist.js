@@ -174,8 +174,8 @@ router.post('/CopyReport', async (req, res) => {
 
           };
 
-          // let insertdb = await mongodb.insertMany(MAIN_DATA, MAIN, [newINSERT]);
-          console.log(newINSERT);
+          let insertdb = await mongodb.insertMany(MAIN_DATA, MAIN, [newINSERT]);
+          // console.log(newINSERT);
           output = "OK";
         }
 
