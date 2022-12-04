@@ -100,7 +100,7 @@ router.post('/GETINSset', async (req, res) => {
       }
 
       INSLISTans = [...new Set(INSLIST)];
-      if(INSLISTans.length === 0){
+      if (INSLISTans.length === 0) {
         let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE", "PO_judgment": "pass", } });
       }
     }
@@ -127,8 +127,8 @@ router.post('/GETINSset', async (req, res) => {
           }
         }
         INSLISTans = [...new Set(INSLIST)];
-        
-      }else{
+
+      } else {
         INSLISTans = [];
       }
     }
@@ -151,6 +151,82 @@ router.post('/GETINSset', async (req, res) => {
 //         "PARTNAME": "",
 //         "MATERIAL": "",
 
+router.post('/JUDEMENT', async (req, res) => {
+  //-------------------------------------
+  console.log('--JUDEMENT--');
+  console.log(req.body);
+  let input = req.body;
+  //-------------------------------------
+  if (input['PO'] !== undefined && input['CP'] !== undefined) {
+    findPO = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });
+    findcp = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['CP'] });
 
+    if (findPO.length > 0 && findcp.length > 0) {
+      // console.log(findcp[0]['FINAL']);
+      let specList = []
+      for (let i = 0; i < findcp[0]['FINAL'].length; i++) {
+        specList.push({"ITEMs":findcp[0]['FINAL'][i][`ITEMs`] , "SPECIFICATIONve":findcp[0]['FINAL'][i][`SPECIFICATIONve`]});   
+      }
+      // console.log(specList);
+      // console.log(findPO[0]['FINAL']);
+      // console.log(Object.getOwnPropertyNames(findPO[0]['FINAL']));
+      let ListEQP = Object.getOwnPropertyNames(findPO[0]['FINAL']);
+      let LisDATA = [];
+      for (let i = 0; i < ListEQP.length; i++) {
+        // console.log(findPO[0]['FINAL'][ListEQP[i]].length);
+        // LisDATA.push(findPO[0]['FINAL'][ListEQP[i]]);
+        let ListDATAsub = Object.getOwnPropertyNames(findPO[0]['FINAL'][ListEQP[i]]);
+        if(ListDATAsub.length == 1){
+          LisDATA.push(findPO[0]['FINAL'][ListEQP[i]]);
+        }else if(ListDATAsub.length > 1){
+          for (let j = 0; j < ListDATAsub.length; j++) {
+            let buffer = {};
+            buffer[ListDATAsub[j]] = findPO[0]['FINAL'][ListEQP[i]][ListDATAsub[j]]
+            LisDATA.push(buffer);
+          }
+        }
+      }
+
+      // console.log(LisDATA);
+      // console.log(specList);
+
+      for(i=0;i<specList.length;i++){
+        if(specList.length){
+          // console.log( specList[i][`ITEMs`]) 
+          // console.log(typeof specList[i][`SPECIFICATIONve`]) 
+          if(typeof specList[i][`SPECIFICATIONve`] === 'string'){
+            // console.log(specList[i][`ITEMs`]) ;
+            // console.log(LisDATA) ;
+            for(j=0;j<LisDATA.length;j++){
+              if(LisDATA[j][specList[i][`ITEMs`]] !== undefined ){
+                // console.log(LisDATA[j][specList[i][`ITEMs`]]) ;
+                let bufferDATA = Object.getOwnPropertyNames(LisDATA[j][specList[i][`ITEMs`]]);
+                console.log(bufferDATA);
+              }
+
+            }
+         
+          }else if(typeof specList[i][`SPECIFICATIONve`] === 'object'){
+            // console.log(specList[i][`ITEMs`]) ;
+            // console.log(LisDATA[0][specList[i][`ITEMs`]]) ;
+            for(j=0;j<LisDATA.length;j++){
+              if(LisDATA[j][specList[i][`ITEMs`]] !== undefined ){
+                // console.log(LisDATA[j][specList[i][`ITEMs`]]) ;
+                let bufferDATA = Object.getOwnPropertyNames(LisDATA[j][specList[i][`ITEMs`]]);
+                console.log(bufferDATA);
+              }
+  
+            }
+          }
+
+        }
+      }
+
+    }
+  }
+
+
+  res.json("INSLISTans");
+});
 
 module.exports = router;
