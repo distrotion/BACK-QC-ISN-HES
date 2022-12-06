@@ -36,7 +36,7 @@ router.get('/report01', async (req, res) => {
 });
 
 
-router.post('/ReportList', async (req, res) => {
+router.post('/ReportListACT', async (req, res) => {
   console.log('--ReportList--');
   console.log(req.body);
   let input = req.body;
