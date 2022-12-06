@@ -37,122 +37,247 @@ router.get('/report01', async (req, res) => {
 
 
 router.post('/ReportList', async (req, res) => {
+  console.log('--ReportList--');
+  console.log(req.body);
+  let input = req.body;
 
-  var d = new Date();
-  d.setFullYear(d.getFullYear(), d.getMonth(), 1);
-
-  var dc = new Date();
-  dc.setFullYear(dc.getFullYear(), dc.getMonth(), 7);
-
-  // day = `${d.getFullYear()}-${(d.getMonth() + 1).pad(2)}-${(d.getDate()).pad(2)}`
-  // dayC = `${dc.getFullYear()}-${(dc.getMonth() + 1).pad(2)}-${(dc.getDate()).pad(2)}`
-  // tim = `${(d.getHours()).pad(2)}:${(d.getMinutes()).pad(2)}:${(d.getSeconds()).pad(2)}`
-
-  out = {
-    "ALL_DONE": 'DONE',
-    "dateG":
-    {
-      "$gte": d,
-      "$lt": dc
-    }
-  }
-  // console.log(out)
-  let find = await mongodb.find(MAIN_DATA, MAIN, out);
-  let masterITEMs = await mongodb.find(master_FN, ITEMs, {});
   let DATAlist = [];
-  for (i = 0; i < find.length; i++) {
-    //
-    // console.log(Object.getOwnPropertyNames(find[i]["FINAL"]));
-    let INS = Object.getOwnPropertyNames(find[i]["FINAL"]);
-    console.log("-------------------" + i)
-    let depDATAlist = [];
-    for (j = 0; j < INS.length; j++) {
-      let Item = find[i]["FINAL"][INS[j]];
-      let Itemlist = Object.getOwnPropertyNames(find[i]["FINAL"][INS[j]]);
-      // console.log(Itemlist);
-      for (k = 0; k < Itemlist.length; k++) {
+  if (input['month'] != undefined && input['year'] != undefined && parseInt(input['month']) > 0 && parseInt(input['month']) <= 12 && parseInt(input['year']) >= 2022) {
+    let startM = 0;
+    let startD = 0;
+    let stoptM = 0;
+    let stoptD = 0;
+    let startY = 0;
+    let stoptY = 0;
 
-        if (Item[Itemlist[k]]["PSC1"] != undefined) {
 
-          if (Item[Itemlist[k]]["PSC1"].length === undefined) {
-            // console.log(Item[Itemlist[k]]["PSC1"]["PO1"]);
-            let name = "";
-                  for (s = 0; s < masterITEMs.length; s++) {
-                    if (masterITEMs[s]["masterID"] === Itemlist[k]) {
-                      // console.log(masterITEMs[s]["ITEMs"]);
-                      name = masterITEMs[s]["ITEMs"];
-                      let data = {}
-                      data[name] = Item[Itemlist[k]]["PSC1"]["PO2"];
-                      if (data[name].length > 0) {
-                        depDATAlist.push(data)
+
+
+    console.log(input['month'])
+    if (input['month'] == '1') {
+      startY = parseInt(input['year']) - 1
+      stoptY = parseInt(input['year'])
+      startM = 11;
+      startD = 31;
+      stoptM = 0;
+      stoptD = 31;
+    } else if (input['month'] == '2') {
+      startY = parseInt(input['year'])
+      stoptY = parseInt(input['year'])
+      startM = 0;
+      startD = 31;
+      stoptM = 1;
+      stoptD = 29;
+    } else if (input['month'] == '3') {
+      startY = parseInt(input['year'])
+      stoptY = parseInt(input['year'])
+      startM = 1;
+      startD = 29;
+      stoptM = 2;
+      stoptD = 31;
+    } else if (input['month'] == '4') {
+      startY = parseInt(input['year'])
+      stoptY = parseInt(input['year'])
+      startM = 2;
+      startD = 31;
+      stoptM = 3;
+      stoptD = 30;
+    } else if (input['month'] == '5') {
+      startY = parseInt(input['year'])
+      stoptY = parseInt(input['year'])
+      startM = 3;
+      startD = 30;
+      stoptM = 4;
+      stoptD = 31;
+    } else if (input['month'] == '6') {
+      startY = parseInt(input['year'])
+      stoptY = parseInt(input['year'])
+      startM = 4;
+      startD = 31;
+      stoptM = 5;
+      stoptD = 30;
+    } else if (input['month'] == '7') {
+      startY = parseInt(input['year'])
+      stoptY = parseInt(input['year'])
+      startM = 5;
+      startD = 30;
+      stoptM = 6;
+      stoptD = 31;
+    } else if (input['month'] == '8') {
+      startY = parseInt(input['year'])
+      stoptY = parseInt(input['year'])
+      startM = 6;
+      startD = 31;
+      stoptM = 7;
+      stoptD = 31;
+    } else if (input['month'] == '9') {
+      startY = parseInt(input['year'])
+      stoptY = parseInt(input['year'])
+      startM = 7;
+      startD = 31;
+      stoptM = 8;
+      stoptD = 30;
+    } else if (input['month'] == '10') {
+      startY = parseInt(input['year'])
+      stoptY = parseInt(input['year'])
+      startM = 8;
+      startD = 30;
+      stoptM = 9;
+      stoptD = 31;
+    } else if (input['month'] == '11') {
+      startY = parseInt(input['year'])
+      stoptY = parseInt(input['year'])
+      startM = 9;
+      startD = 31;
+      stoptM = 10;
+      stoptD = 30;
+    } else if (input['month'] == '12') {
+      startY = parseInt(input['year'])
+      stoptY = parseInt(input['year'])
+      startM = 10;
+      startD = 30;
+      stoptM = 11;
+      stoptD = 31;
+    } else {
+      return res.json([]);
+    }
+
+
+  // var d = new Date();
+  // d.setFullYear(d.getFullYear(), d.getMonth(), 1);
+
+  // var dc = new Date();
+  // dc.setFullYear(dc.getFullYear(), dc.getMonth(), 7);
+  
+    var d = new Date();
+    d.setFullYear(startY, startM, startD);
+  
+    var dc = new Date();
+    dc.setFullYear(stoptY, stoptM, stoptD);
+
+    console.log(d)
+    console.log(dc)
+  
+    // day = `${d.getFullYear()}-${(d.getMonth() + 1).pad(2)}-${(d.getDate()).pad(2)}`
+    // dayC = `${dc.getFullYear()}-${(dc.getMonth() + 1).pad(2)}-${(dc.getDate()).pad(2)}`
+    // tim = `${(d.getHours()).pad(2)}:${(d.getMinutes()).pad(2)}:${(d.getSeconds()).pad(2)}`
+  
+    out = {
+      "ALL_DONE": 'DONE',
+      "dateG":
+      {
+        "$gte": d,
+        "$lt": dc
+      }
+    }
+    // console.log(out)
+    let find = await mongodb.find(MAIN_DATA, MAIN, out);
+    let masterITEMs = await mongodb.find(master_FN, ITEMs, {});
+   
+    for (i = 0; i < find.length; i++) {
+      //
+      // console.log(Object.getOwnPropertyNames(find[i]["FINAL"]));
+      let INS = Object.getOwnPropertyNames(find[i]["FINAL"]);
+      console.log("-------------------" + i)
+      let depDATAlist = [];
+      for (j = 0; j < INS.length; j++) {
+        let Item = find[i]["FINAL"][INS[j]];
+        let Itemlist = Object.getOwnPropertyNames(find[i]["FINAL"][INS[j]]);
+        // console.log(Itemlist);
+        for (k = 0; k < Itemlist.length; k++) {
+  
+          if (Item[Itemlist[k]]["PSC1"] != undefined) {
+  
+            if (Item[Itemlist[k]]["PSC1"].length === undefined) {
+              // console.log(Item[Itemlist[k]]["PSC1"]["PO1"]);
+              let name = "";
+                    for (s = 0; s < masterITEMs.length; s++) {
+                      if (masterITEMs[s]["masterID"] === Itemlist[k]) {
+                        // console.log(masterITEMs[s]["ITEMs"]);
+                        name = masterITEMs[s]["ITEMs"];
+                        let data = {}
+                        data[name] = Item[Itemlist[k]]["PSC1"]["PO2"];
+                        if (data[name].length > 0) {
+                          depDATAlist.push(data)
+                        }
+                        break;
                       }
-                      break;
                     }
-                  }
-          } else {
-            // console.log(Item[Itemlist[k]]["PSC1"].length);
-            let deppdata = Item[Itemlist[k]]["PSC1"];
-
-            // console.log(deppdata);
-            for (l = 0; l < deppdata.length; l++) {
-              if (deppdata[l]["PO1"] === undefined) {
-                // console.log(deppdata[l]["PIC1data"]);
-                let name = "";
-                for (s = 0; s < masterITEMs.length; s++) {
-                  if (masterITEMs[s]["masterID"] === Itemlist[k]) {
-                    // console.log(masterITEMs[s]["ITEMs"]);
-                    name = masterITEMs[s]["ITEMs"];
-                    let data = {}
-                    data[name] = [deppdata[l]["PIC1data"], deppdata[l]["PIC2data"], deppdata[l]["PIC3data"], deppdata[l]["PIC4data"]];
-                    if (data[name].length > 0) {
-                      depDATAlist.push(data)
-                    }
-                    break;
-                  }
-                }
-                // console.log([deppdata[l]["PIC1data"],deppdata[l]["PIC2data"],deppdata[l]["PIC3data"],deppdata[l]["PIC4data"]]);
-
-
-              } else {
-
-                if (deppdata[l]["PO1"] !== "Mean") {
-                  // console.log(deppdata[l]["PO1"]);
-                  // console.log(deppdata[l]["PO3"]);
-                  // depDATAlist.push(deppdata[l]["PO3"])
+            } else {
+              // console.log(Item[Itemlist[k]]["PSC1"].length);
+              let deppdata = Item[Itemlist[k]]["PSC1"];
+  
+              // console.log(deppdata);
+              for (l = 0; l < deppdata.length; l++) {
+                if (deppdata[l]["PO1"] === undefined) {
+                  // console.log(deppdata[l]["PIC1data"]);
                   let name = "";
                   for (s = 0; s < masterITEMs.length; s++) {
                     if (masterITEMs[s]["masterID"] === Itemlist[k]) {
                       // console.log(masterITEMs[s]["ITEMs"]);
                       name = masterITEMs[s]["ITEMs"];
                       let data = {}
-                      data[name] = deppdata[l]["PO3"];
+                      data[name] = [deppdata[l]["PIC1data"], deppdata[l]["PIC2data"], deppdata[l]["PIC3data"], deppdata[l]["PIC4data"]];
                       if (data[name].length > 0) {
                         depDATAlist.push(data)
                       }
                       break;
                     }
                   }
-
+                  // console.log([deppdata[l]["PIC1data"],deppdata[l]["PIC2data"],deppdata[l]["PIC3data"],deppdata[l]["PIC4data"]]);
+  
+  
+                } else {
+  
+                  if (deppdata[l]["PO1"] !== "Mean") {
+                    // console.log(deppdata[l]["PO1"]);
+                    // console.log(deppdata[l]["PO3"]);
+                    // depDATAlist.push(deppdata[l]["PO3"])
+                    let name = "";
+                    for (s = 0; s < masterITEMs.length; s++) {
+                      if (masterITEMs[s]["masterID"] === Itemlist[k]) {
+                        // console.log(masterITEMs[s]["ITEMs"]);
+                        name = masterITEMs[s]["ITEMs"];
+                        let data = {}
+                        data[name] = deppdata[l]["PO3"];
+                        if (data[name].length > 0) {
+                          depDATAlist.push(data)
+                        }
+                        break;
+                      }
+                    }
+  
+                  }
                 }
+  
               }
-
+  
             }
-
           }
         }
+  
       }
-
+      // console.log(depDATAlist)
+      DATAlist.push({
+         "STATUS":"OK",
+        "PO":find[i]['PO'],
+        "CP":find[i]['CP'],
+        "CUSTNAME":find[i]['CUSTNAME'],
+        "CUSLOTNO":find[i]['CUSLOTNO'],
+        "PART":find[i]['PART'],
+        "PARTNAME":find[i]['PARTNAME'],
+        "MATERIAL":find[i]['MATERIAL'],
+        "QUANTITY":find[i]['QUANTITY'],
+        "dateG":find[i]['dateG'],
+        "FG_CHARG":find[i]['FG_CHARG'],
+        "DATA":depDATAlist
+      })
     }
-    console.log(depDATAlist)
-    DATAlist.push({
-      "PO":find[i]['PO'],
-      "CP":find[i]['CP'],
-      "DATA":depDATAlist
-    })
+  
+  
+  
+
   }
-
-
-
 
   return res.json(DATAlist);
 });
