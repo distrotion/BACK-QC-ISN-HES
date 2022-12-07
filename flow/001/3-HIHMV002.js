@@ -688,7 +688,7 @@ router.post('/HIHMV002-feedback', async (req, res) => {
           let dataCheck = await axios.post("http://localhost:16010/JUDEMENT",{"PO":HIHMV002db["PO"],"CP":HIHMV002db["CP"]})
           let resultdataCheck = 'pass'
           for(let i = 0;i<dataCheck.length;i++){
-            if(dataCheck['result'] !== 'OK'){
+            if(dataCheck[i]['result'] !== 'OK'){
               resultdataCheck = 'no pass';
               break;
             }

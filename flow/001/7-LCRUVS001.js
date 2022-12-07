@@ -683,7 +683,7 @@ router.post('/LCRUVS001-feedback', async (req, res) => {
           let dataCheck = await axios.post("http://localhost:16010/JUDEMENT",{"PO":LCRUVS001db["PO"],"CP":LCRUVS001db["CP"]})
           let resultdataCheck = 'pass'
           for(let i = 0;i<dataCheck.length;i++){
-            if(dataCheck['result'] !== 'OK'){
+            if(dataCheck[i]['result'] !== 'OK'){
               resultdataCheck = 'no pass';
               break;
             }

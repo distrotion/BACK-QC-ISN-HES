@@ -540,7 +540,7 @@ router.post('/MCSINSHES-feedback', async (req, res) => {
           let dataCheck = await axios.post("http://localhost:16010/JUDEMENT",{"PO":MCSINSHESdb["PO"],"CP":MCSINSHESdb["CP"]})
           let resultdataCheck = 'pass'
           for(let i = 0;i<dataCheck.length;i++){
-            if(dataCheck['result'] !== 'OK'){
+            if(dataCheck[i]['result'] !== 'OK'){
               resultdataCheck = 'no pass';
               break;
             }
