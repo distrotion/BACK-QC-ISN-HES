@@ -4,6 +4,7 @@ var mongodb = require('../../function/mongodb');
 var mongodbINS = require('../../function/mongodbINS');
 var mssql = require('../../function/mssql');
 var request = require('request');
+const axios = require("../../function/axios");
 
 //----------------- date
 
@@ -680,7 +681,15 @@ router.post('/HIRGH001-feedback', async (req, res) => {
         if (CHECKlistdataFINISH.length === feedback[0]['CHECKlist'].length) {
           // feedback[0]['FINAL_ANS']["ALL_DONE"] = "DONE";
           // feedback[0]['FINAL_ANS']["PO_judgment"] ="pass";
-          let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE", "PO_judgment": "pass", } });
+          let dataCheck = await axios.post("http://localhost:16010/JUDEMENT",{"PO":HIRGH001db["PO"],"CP":HIRGH001db["CP"]})
+          let resultdataCheck = 'pass'
+          for(let i = 0;i<dataCheck.length;i++){
+            if(dataCheck['result'] !== 'OK'){
+              resultdataCheck = 'no pass';
+              break;
+            }
+          }
+          let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE", "PO_judgment": resultdataCheck, } });
         }
 
       }

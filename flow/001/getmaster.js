@@ -1,6 +1,7 @@
 const express = require("express");
 const { kill } = require("nodemon/lib/monitor/run");
 const router = express.Router();
+const axios = require("../../function/axios");
 let mongodb = require('../../function/mongodb');
 
 //----------------- DATABASE
@@ -26,10 +27,11 @@ router.post('/getmaster', async (req, res) => {
   if (input['PO'] !== undefined && input['CP'] !== undefined) {
 
   }
+  let data = await axios.post("http://localhost:16010/JUDEMENT",{"PO":"3310268547","CP":"24013199"})
 
 
   //-------------------------------------
-  res.json(output);
+  res.json(data);
 });
 
 router.post('/GETINSset', async (req, res) => {
