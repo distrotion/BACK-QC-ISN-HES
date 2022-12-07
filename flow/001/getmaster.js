@@ -51,6 +51,8 @@ router.post('/GETINSset', async (req, res) => {
   if (input['CP'] !== undefined && input['PO'] !== undefined) {
     findcp = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['CP'] });
     findPO = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });
+
+
   }
   if (findcp.length > 0 && findPO.length === 0) {
     if (findcp[0]['FINAL'] !== undefined && findcp[0]['FINAL'].length > 0) {
@@ -133,7 +135,7 @@ router.post('/GETINSset', async (req, res) => {
       }
     }
   }
-
+  console.log(INSLISTans);
 
   //-------------------------------------
   res.json(INSLISTans);
@@ -157,6 +159,7 @@ router.post('/JUDEMENT', async (req, res) => {
   console.log(req.body);
   let input = req.body;
   //-------------------------------------
+  let output = [];
   if (input['PO'] !== undefined && input['CP'] !== undefined) {
     findPO = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });
     findcp = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['CP'] });
@@ -165,7 +168,7 @@ router.post('/JUDEMENT', async (req, res) => {
       // console.log(findcp[0]['FINAL']);
       let specList = []
       for (let i = 0; i < findcp[0]['FINAL'].length; i++) {
-        specList.push({"ITEMs":findcp[0]['FINAL'][i][`ITEMs`] , "SPECIFICATIONve":findcp[0]['FINAL'][i][`SPECIFICATIONve`]});   
+        specList.push({ "ITEMs": findcp[0]['FINAL'][i][`ITEMs`], "SPECIFICATIONve": findcp[0]['FINAL'][i][`SPECIFICATIONve`] });
       }
       // console.log(specList);
       // console.log(findPO[0]['FINAL']);
@@ -176,9 +179,9 @@ router.post('/JUDEMENT', async (req, res) => {
         // console.log(findPO[0]['FINAL'][ListEQP[i]].length);
         // LisDATA.push(findPO[0]['FINAL'][ListEQP[i]]);
         let ListDATAsub = Object.getOwnPropertyNames(findPO[0]['FINAL'][ListEQP[i]]);
-        if(ListDATAsub.length == 1){
+        if (ListDATAsub.length == 1) {
           LisDATA.push(findPO[0]['FINAL'][ListEQP[i]]);
-        }else if(ListDATAsub.length > 1){
+        } else if (ListDATAsub.length > 1) {
           for (let j = 0; j < ListDATAsub.length; j++) {
             let buffer = {};
             buffer[ListDATAsub[j]] = findPO[0]['FINAL'][ListEQP[i]][ListDATAsub[j]]
@@ -190,32 +193,221 @@ router.post('/JUDEMENT', async (req, res) => {
       // console.log(LisDATA);
       // console.log(specList);
 
-      for(i=0;i<specList.length;i++){
-        if(specList.length){
+      for (i = 0; i < specList.length; i++) {
+        if (specList.length) {
           // console.log( specList[i][`ITEMs`]) 
           // console.log(typeof specList[i][`SPECIFICATIONve`]) 
-          if(typeof specList[i][`SPECIFICATIONve`] === 'string'){
+          if (typeof specList[i][`SPECIFICATIONve`] === 'string') {
             // console.log(specList[i][`ITEMs`]) ;
             // console.log(LisDATA) ;
-            for(j=0;j<LisDATA.length;j++){
-              if(LisDATA[j][specList[i][`ITEMs`]] !== undefined ){
+            for (j = 0; j < LisDATA.length; j++) {
+              if (LisDATA[j][specList[i][`ITEMs`]] !== undefined) {
                 // console.log(LisDATA[j][specList[i][`ITEMs`]]) ;
                 let bufferDATA = Object.getOwnPropertyNames(LisDATA[j][specList[i][`ITEMs`]]);
-                console.log(bufferDATA);
+                // console.log(bufferDATA);
+                let ITEMid = Object.getOwnPropertyNames(LisDATA[j])
+                if (ITEMid.length > 0) {
+                  console.log(Object.getOwnPropertyNames(LisDATA[j])[0])
+                  for (let k = 0; k < bufferDATA.length; k++) {
+                    console.log(specList[i][`SPECIFICATIONve`])
+                    console.log(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]]['PO2'])
+                    if (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]]['PO2'] === "Good") {
+                      output.push({ "ITEMs": ITEMid, "NO": k + 1, "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]]['PO2'], "result": "OK" })
+                    } else {
+                      output.push({ "ITEMs": ITEMid, "NO": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]]['PO2'], "result": "NOK" })
+                    }
+                    console.log("-----------------------")
+                  }
+                }
+
               }
 
             }
-         
-          }else if(typeof specList[i][`SPECIFICATIONve`] === 'object'){
+
+          } else if (typeof specList[i][`SPECIFICATIONve`] === 'object') {
             // console.log(specList[i][`ITEMs`]) ;
             // console.log(LisDATA[0][specList[i][`ITEMs`]]) ;
-            for(j=0;j<LisDATA.length;j++){
-              if(LisDATA[j][specList[i][`ITEMs`]] !== undefined ){
+            for (j = 0; j < LisDATA.length; j++) {
+              if (LisDATA[j][specList[i][`ITEMs`]] !== undefined) {
                 // console.log(LisDATA[j][specList[i][`ITEMs`]]) ;
                 let bufferDATA = Object.getOwnPropertyNames(LisDATA[j][specList[i][`ITEMs`]]);
-                console.log(bufferDATA);
+                let ITEMid = Object.getOwnPropertyNames(LisDATA[j])
+                if (ITEMid.length > 0) {
+                  console.log(Object.getOwnPropertyNames(LisDATA[j])[0])
+                  // console.log(bufferDATA);
+                  for (let k = 0; k < bufferDATA.length; k++) {
+
+                    // console.log(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]])
+
+
+                    if (specList[i][`SPECIFICATIONve`]['condition'] === 'LOL(<)') {
+
+                      for (let p = 0; p < LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]].length; p++) {
+                        // console.log( specList[i][`SPECIFICATIONve`]) 
+                        if (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data'] === undefined) {
+                          if (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']) <= parseFloat(specList[i][`SPECIFICATIONve`]['LOL_H'])) {
+                            // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                            output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3'], "result": "OK" })
+                          } else {
+                            output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3'], "result": "NOK" })
+                          }
+                        } else {
+                          if ((LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) !== '' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) !== '0' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) !== 0) {
+                            if (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) <= parseFloat(specList[i][`SPECIFICATIONve`]['LOL_H'])) {
+                              // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data'], "result": "OK" })
+                            } else {
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data'], "result": "NOK" })
+                            }
+                          }
+
+                          if ((LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) !== '' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) !== '0' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) !== 0) {
+                            if (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) <= parseFloat(specList[i][`SPECIFICATIONve`]['LOL_H'])) {
+                              // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data'], "result": "OK" })
+                            } else {
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data'], "result": "NOK" })
+                            }
+                          }
+
+                          if ((LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) !== '' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) !== '0' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) !== 0) {
+                            if (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) <= parseFloat(specList[i][`SPECIFICATIONve`]['LOL_H'])) {
+                              // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data'], "result": "OK" })
+                            } else {
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data'], "result": "NOK" })
+                            }
+                          }
+
+                          if ((LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) !== '' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) !== '0' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) !== 0) {
+                            if (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) <= parseFloat(specList[i][`SPECIFICATIONve`]['LOL_H'])) {
+                              // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data'], "result": "OK" })
+                            } else {
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data'], "result": "NOK" })
+                            }
+                          }
+                        }
+
+                      }
+
+                    } else if (specList[i][`SPECIFICATIONve`]['condition'] === 'HIM(>)') {
+
+                      for (let p = 0; p < LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]].length; p++) {
+                        // console.log( LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) 
+
+                        if (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data'] === undefined) {
+
+                          if (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']) >= parseFloat(specList[i][`SPECIFICATIONve`]['HIM_L'])) {
+                            // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                            output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3'], "result": "OK" })
+                          } else {
+                            output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3'], "result": "NOK" })
+                          }
+                        } else {
+                          if ((LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) !== '' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) !== '0' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) !== 0) {
+                            if (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) >= parseFloat(specList[i][`SPECIFICATIONve`]['HIM_L'])) {
+                              // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data'], "result": "OK" })
+                            } else {
+
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data'], "result": "NOK" })
+                            }
+                          }
+
+                          if ((LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) !== '' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) !== '0' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) !== 0) {
+                            if (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) >= parseFloat(specList[i][`SPECIFICATIONve`]['HIM_L'])) {
+                              // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data'], "result": "OK" })
+                            } else {
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data'], "result": "NOK" })
+                            }
+                          }
+
+                          if ((LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) !== '' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) !== '0' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) !== 0) {
+                            if (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) >= parseFloat(specList[i][`SPECIFICATIONve`]['HIM_L'])) {
+                              // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data'], "result": "OK" })
+                            } else {
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data'], "result": "NOK" })
+                            }
+                          }
+
+                          if ((LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) !== '' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) !== '0' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) !== 0) {
+                            if (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) >= parseFloat(specList[i][`SPECIFICATIONve`]['HIM_L'])) {
+                              // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data'], "result": "OK" })
+                            } else {
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data'], "result": "NOK" })
+                            }
+                          }
+                        }
+
+                      }
+
+                    } else if (specList[i][`SPECIFICATIONve`]['condition'] === 'BTW') {
+                      
+                      for (let p = 0; p < LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]].length; p++) {
+                        // console.log( LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) 
+
+                        if (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data'] === undefined) {
+
+                          if ((parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']) >= parseFloat(specList[i][`SPECIFICATIONve`]['BTW_LOW'])) && (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']) <= parseFloat(specList[i][`SPECIFICATIONve`]['BTW_HI']))) {
+                            // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                            output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3'], "result": "OK" })
+                          } else {
+                            output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3'], "result": "NOK" })
+                          }
+                        } else {
+                          if ((LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) !== '' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) !== '0' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) !== 0) {
+                            if ((parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) >= parseFloat(specList[i][`SPECIFICATIONve`]['BTW_LOW'])) && (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data']) <= parseFloat(specList[i][`SPECIFICATIONve`]['BTW_HI']))) {
+                              // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data'], "result": "OK" })
+                            } else {
+
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC1data'], "result": "NOK" })
+                            }
+                          }
+
+                          if ((LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) !== '' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) !== '0' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) !== 0) {
+                            if ((parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) >= parseFloat(specList[i][`SPECIFICATIONve`]['BTW_LOW']))&& (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data']) <= parseFloat(specList[i][`SPECIFICATIONve`]['BTW_HI']))) {
+                              // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data'], "result": "OK" })
+                            } else {
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC2data'], "result": "NOK" })
+                            }
+                          }
+
+                          if ((LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) !== '' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) !== '0' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) !== 0) {
+                            if ((parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) >= parseFloat(specList[i][`SPECIFICATIONve`]['BTW_LOW']))&& (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data']) <= parseFloat(specList[i][`SPECIFICATIONve`]['BTW_HI']))) {
+                              // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data'], "result": "OK" })
+                            } else {
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC3data'], "result": "NOK" })
+                            }
+                          }
+
+                          if ((LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) !== '' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) !== '0' && (LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) !== 0) {
+                            if ((parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) >= parseFloat(specList[i][`SPECIFICATIONve`]['BTW_LOW']))&& (parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data']) <= parseFloat(specList[i][`SPECIFICATIONve`]['BTW_HI']))) {
+                              // console.log(parseFloat(LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3']))
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data'], "result": "OK" })
+                            } else {
+                              output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PIC4data'], "result": "NOK" })
+                            }
+                          }
+                        }
+
+                      }
+
+                    } else if (specList[i][`SPECIFICATIONve`]['condition'] === "Actual") {
+                      output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3'], "result": "OK" })
+                    }
+
+                    console.log("-----------------------")
+                  }
+                }
               }
-  
+
             }
           }
 
@@ -226,7 +418,7 @@ router.post('/JUDEMENT', async (req, res) => {
   }
 
 
-  res.json("INSLISTans");
+  res.json(output);
 });
 
 module.exports = router;
