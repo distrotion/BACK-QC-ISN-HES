@@ -402,7 +402,9 @@ router.post('/JUDEMENT', async (req, res) => {
                       }
 
                     } else if (specList[i][`SPECIFICATIONve`]['condition'] === "Actual") {
+                      for (let p = 0; p < LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]].length; p++) {
                       output.push({ "ITEMs": ITEMid, "NO": k + 1, "SPECIFICATIONve": specList[i][`SPECIFICATIONve`], "value": LisDATA[j][specList[i][`ITEMs`]][bufferDATA[k]][p]['PO3'], "result": "OK" })
+                      }
                     }
 
                     console.log("-----------------------")
