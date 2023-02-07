@@ -421,15 +421,6 @@ router.post('/JUDEMENT', async (req, res) => {
     }
   }
 
-  let resultdataCheck = 'pass'
-  for(let i = 0;i<output.length;i++){
-    if(output[i]['result'] !== 'OK'){
-      resultdataCheck = 'no pass';
-      break;
-    }
-  }
-  console.log(resultdataCheck);
-
 
   res.json(output);
 });
