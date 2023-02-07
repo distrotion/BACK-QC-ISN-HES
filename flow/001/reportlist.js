@@ -151,9 +151,11 @@ router.post('/ReportListACT', async (req, res) => {
   
     var d = new Date();
     d.setFullYear(startY, startM, startD);
-  
+    d.setDate(d.getDate() - 1);
     var dc = new Date();
     dc.setFullYear(stoptY, stoptM, stoptD);
+    dc.setDate(dc.getDate() + 1);
+    
 
     console.log(d)
     console.log(dc)
