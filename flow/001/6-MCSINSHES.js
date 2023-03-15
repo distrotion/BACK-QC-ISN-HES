@@ -197,6 +197,7 @@ router.post('/GETINtoMCSINSHES', async (req, res) => {
           "PARTNAME_PO": dbsap['PARTNAME_PO'] || '',
           "PART_PO": dbsap['PART_PO'] || '',
           "CUSTNAME": dbsap['CUSTNAME'] || '',
+          "UNITSAP": dbsap['UNIT'] || '',
           //----------------------
           "ItemPick": ItemPickoutP2, //---->
           "ItemPickcode": ItemPickcodeoutP2, //---->
