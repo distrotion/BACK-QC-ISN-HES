@@ -275,13 +275,9 @@ router.post('/ReportListACT', async (req, res) => {
         "DATA":depDATAlist
       })
     }
-  
-  
-  
-
   }
 
-  console.log(DATAlist)
+
   return res.json(DATAlist);
 });
 
