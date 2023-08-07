@@ -55,9 +55,9 @@ router.post('/GETINSset', async (req, res) => {
     findPO = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });
 
 
-    if(findcp.length === 0 ){
-      findcp = await mongodb.find(PATTERN, PATTERN_01, { "FG": input['CP'] });
-    }
+    // if(findcp.length === 0 ){
+    //   findcp = await mongodb.find(PATTERN, PATTERN_01, { "FG": input['CP'] });
+    // }
 
   }
   if (findcp.length > 0 && findPO.length === 0) {
