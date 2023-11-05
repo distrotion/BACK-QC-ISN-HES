@@ -301,11 +301,12 @@ router.post('/CopyReport', async (req, res) => {
     let find = await mongodb.find("ORDER", "ORDER", {});
     if (find.length > 0) {
       let sapdata = find[0][`DATA`];
-
+      let CUSLOTNOd = ``
       for (i = 0; i < sapdata.length; i++) {
         if (input[`new`] === sapdata[i][`PO`]) {
           newdataHEAD = sapdata[i];
-          break;
+          CUSLOTNOd = CUSLOTNOd+ sapdata[i][`CUSLOTNO`]+`,`
+          // break;
         }
       }
 
@@ -333,10 +334,10 @@ router.post('/CopyReport', async (req, res) => {
               //
               "QTY": newdataHEAD[`QUANTITY`],
               "PROCESS": newdataHEAD[`PROCESS`],
-              "CUSLOT": newdataHEAD[`CUSLOTNO`],
+              "CUSLOT": CUSLOTNOd,
               "TPKLOT": newdataHEAD[`FG_CHARG`],
               "QUANTITY": newdataHEAD[`QUANTITY`],
-              "CUSLOTNO": newdataHEAD[`CUSLOTNO`],
+              "CUSLOTNO": CUSLOTNOd,
               "FG_CHARG": newdataHEAD[`FG_CHARG`],
               "CUSTNAME": newdataHEAD[`CUSTNAME`],
               //
