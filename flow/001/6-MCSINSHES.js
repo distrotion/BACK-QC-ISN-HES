@@ -184,7 +184,7 @@ router.post('/GETINtoMCSINSHES', async (req, res) => {
           "CUSLOT": cuslot,
           "TPKLOT": dbsap['FG_CHARG'] || '',
           "FG": dbsap['FG'] || '',
-          "CUSTOMER": findcp[0]['CUST_FULLNM'] || '',
+          "CUSTOMER": dbsap['CUSTOMER'] || '',
           "PART": dbsap['PART'] || '',
           "PARTNAME": dbsap['PARTNAME'] || '',
           "MATERIAL": dbsap['MATERIAL'] || '',
