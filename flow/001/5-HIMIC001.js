@@ -189,7 +189,7 @@ router.post('/GETINtoHIMIC001', async (req, res) => {
           "CUSLOT": cuslot,
           "TPKLOT": dbsap['FG_CHARG'] || '',
           "FG": dbsap['FG'] || '',
-          "CUSTOMER": dbsap['CUSTOMER'] || '',
+          "CUSTOMER": findcp[0]['CUST_FULLNM'] || '',
           "PART": dbsap['PART'] || '',
           "PARTNAME": dbsap['PARTNAME'] || '',
           "MATERIAL": dbsap['MATERIAL'] || '',
