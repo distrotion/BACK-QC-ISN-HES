@@ -184,8 +184,8 @@ router.post('/GETINtoMCSINSHES', async (req, res) => {
           "CUSLOT": cuslot,
           "TPKLOT": dbsap['FG_CHARG'] || '',
           "FG": dbsap['FG'] || '',
-          // "CUSTOMER": dbsap['CUSTOMER'] || '',
-          "CUSTOMER": findcp[0]['CUST_FULLNM'] || '',
+          "CUSTOMER": dbsap['CUSTOMER'] || '',
+          // "CUSTOMER": findcp[0]['CUST_FULLNM'] || '',
           "PART": dbsap['PART'] || '',
           "PARTNAME": dbsap['PARTNAME'] || '',
           "MATERIAL": dbsap['MATERIAL'] || '',
@@ -197,8 +197,8 @@ router.post('/GETINtoMCSINSHES', async (req, res) => {
           "FG_CHARG": dbsap['FG_CHARG'] || '',
           "PARTNAME_PO": dbsap['PARTNAME_PO'] || '',
           "PART_PO": dbsap['PART_PO'] || '',
-          // "CUSTNAME": dbsap['CUSTNAME'] || '',
-          "CUSTNAME": findcp[0]['CUST_FULLNM'] || '',
+          "CUSTNAME": dbsap['CUSTNAME'] || '',
+          // "CUSTNAME": findcp[0]['CUST_FULLNM'] || '',
           "UNITSAP": dbsap['UNIT'] || '',
           //----------------------
           "ItemPick": ItemPickoutP2, //---->
