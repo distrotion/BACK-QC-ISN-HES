@@ -16,9 +16,10 @@ router.use(require("./flow/001/INSFINISH"))
 router.use(require("./flow/001/cleardata"))
 router.use(require("./flow/001/GRAPHMASTER"))
 router.use(require("./flow/001/reportlist"))
+router.use(require("./flow/001/TOBEREPORT"))
 //reportlist
 //INSFINISH
-// router.use(require("./flow/004/flow004"))
+// router.use(require("./flow/004/flow004"))TOBEREPORT
 // router.use(require("./flow/005/flow005"))
 router.use(require("./flow/testflow/testflow"))
 

@@ -315,7 +315,10 @@ router.post('/CopyReport', async (req, res) => {
         if (testDB.length === 0) {
           let origianlDB = await mongodb.find(MAIN_DATA, MAIN, { "PO": input[`original`] });
           let NewMATCP = await mongodb.find(PATTERN, PATTERN_01, { "CP": newdataHEAD[`CP`] });
-
+          console.log(newdataHEAD[`CP`]);
+          console.log(NewMATCP.length );
+          
+          console.log(origianlDB.length );
           if (NewMATCP.length > 0 && origianlDB.length > 0) {
             let NewMATCPdata = NewMATCP[0];
             let origianlDBdata = origianlDB[0];
