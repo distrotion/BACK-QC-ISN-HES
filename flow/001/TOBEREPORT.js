@@ -17,7 +17,7 @@ let ITEMs = 'ITEMs';
 
 
 
-router.post('/TOBEREPOR/GETDATAISN', async (req, res) => {
+router.post('/TOBEREPOR/GETDATA', async (req, res) => {
   //-------------------------------------
   console.log(req.body);
   //-------------------------------------
@@ -130,8 +130,10 @@ let SPECIFICATIONve = {};
                           let datainside = datamaster['FINAL'][inslist[i]][itemlist[j]][subpicdata[k]];
                           let datasetrawin = [];
                           for (let v = 0; v < datainside.length; v++) {
-                            datasetrawin.push(datainside[v]['PO3'].replace("\n", "").replace("\r", ""));
-                            // console.log(datainside)
+                            // datasetrawin.push(datainside[v]['PO3'].replace("\n", "").replace("\r", ""));
+                            datasetrawin.push(datainside[v]['PO3']);
+                 
+                            console.log(datainside)
 
                           }
                           datasetraw.push(datasetrawin);
@@ -168,8 +170,9 @@ let SPECIFICATIONve = {};
                           let datainside = datamaster['FINAL'][inslist[i]][itemlist[j]][subpicdata[k]];
                           let datasetrawin = [];
                           for (let v = 0; v < datainside.length; v++) {
-                            datasetrawin.push(datainside[v]['PO3'].replace("\n", "").replace("\r", ""));
-                            // console.log(datainside)
+                            // datasetrawin.push(datainside[v]['PO3'].replace("\n", "").replace("\r", ""));
+                            datasetrawin.push(datainside[v]['PO3']);
+                            console.log(datainside)
 
                           }
                           datasetraw.push(datasetrawin);
@@ -220,22 +223,6 @@ let SPECIFICATIONve = {};
   res.json(output);
 });
 
-router.post('/TOBEREPOR/GETDATASOI12_PATTERN', async (req, res) => {
-  //-------------------------------------
-  console.log(req.body);
-  //-------------------------------------
-  let input = req.body;
-  let output = {};
-  if (input['MATCP'] != undefined){
-    let findPATTERN = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['MATCP'] });
-    //
-    output = findPATTERN;
-    res.json(output);
-  }
-
-
-  res.json(output);
-});
 
 
 module.exports = router;
