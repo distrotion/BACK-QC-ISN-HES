@@ -188,6 +188,10 @@ let SPECIFICATIONve = {};
 
                       }
 
+                    } else if (RESULTFORMATitem[itemlist[j]] === 'Picture') {
+
+
+
                     }
 
 
