@@ -7,7 +7,8 @@ var axios = require('axios');
 
 
 let MAIN_DATA = 'MAIN_DATA';
-let MAIN = 'MAIN';
+// let MAIN = 'MAIN';
+let MAIN = 'MAIN_210624';
 
 let PATTERN = 'PATTERN';
 let PATTERN_01 = 'PATTERN_01';
