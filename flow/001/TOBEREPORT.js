@@ -7,8 +7,8 @@ var axios = require('axios');
 
 
 let MAIN_DATA = 'MAIN_DATA';
-// let MAIN = 'MAIN';
-let MAIN = 'MAIN_210624';
+let MAIN = 'MAIN';
+// let MAIN = 'MAIN_210624';
 
 let PATTERN = 'PATTERN';
 let PATTERN_01 = 'PATTERN_01';
@@ -33,7 +33,14 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
   let SPECIFICATIONve = {};
 
 
-  if (input['MATCP'] != undefined && input['STARTyear'] != undefined && input['STARTmonth'] != undefined && input['STARTday'] != undefined && input['ENDyear'] != undefined && input['ENDmonth'] != undefined && input['ENDday'] != undefined) {
+  if (input['MATCP'] != undefined && input['STARTyear'] != undefined && input['STARTmonth'] != undefined && input['STARTday'] != undefined && input['ENDyear'] != undefined && input['ENDmonth'] != undefined && input['ENDday'] != undefined&& input['DB'] != undefined) {
+
+    let inMAINDB = input['DB'] 
+
+    if(inMAINDB === ''){
+
+      inMAINDB = 'MAIN';
+    }
 
     let d = new Date();
     d.setFullYear(input['STARTyear'], `${parseInt(input['STARTmonth']) - 1}`, input['STARTday']);
@@ -50,7 +57,7 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
     }
 
     let findITEMs = await mongodb.find(master_FN, ITEMs, {});
-    let findMATCP = await mongodb.find(MAIN_DATA, MAIN, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    let findMATCP = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
     // let findMATCP = await mongodb.find(MAIN_DATA, MAIN, { "MATCP": input['MATCP'] });
     let findPATTERN = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['MATCP'] });
 
@@ -63,7 +70,7 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
         itemlist.push(data[i]['ITEMs']);
 
         SPECIFICATIONve[data[i]['ITEMs']] = data[i]['SPECIFICATIONve'] || '{}';
-        
+
       }
 
 
@@ -73,9 +80,9 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
             itemobject[itemlist[i]] = findITEMs[j]['ITEMs'];
             RESULTFORMATitem[itemlist[i]] = findITEMs[j]['RESULTFORMAT'];
 
-  
 
-           
+
+
             //SPECIFICATIONve
             //RESULTFORMATitem
             break;
@@ -102,11 +109,11 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
 
               if (datamaster['FINAL'][inslist[i]] != undefined) {
 
-      
+
 
 
                 if (datamaster['FINAL'][inslist[i]][itemlist[j]] != undefined) {
-                  if (RESULTFORMATitem[itemlist[j]] !== 'Text' ) {
+                  if (RESULTFORMATitem[itemlist[j]] !== 'Text') {
 
                     //----------------------------------------------------------------------------------------
 
@@ -114,7 +121,7 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
 
                       dataobject['PO'] = datamaster['PO'];
                       dataobject["itemlist"] = itemlist,
-                      dataobject["itemobject"] = itemobject,
+                        dataobject["itemobject"] = itemobject,
 
                         dataobject['MATCP'] = datamaster['MATCP'];
                       dataobject['CUSTOMER'] = datamaster['CUSTOMER'];
@@ -135,7 +142,7 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
                           for (let v = 0; v < datainside.length; v++) {
                             // datasetrawin.push(datainside[v]['PO3'].replace("\n", "").replace("\r", ""));
                             datasetrawin.push(datainside[v]['PO3']);
-                 
+
                             // console.log(datainside)
 
                           }
@@ -147,7 +154,7 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
                         "name": itemobject[itemlist[j]],
                         "itemcode": itemlist[j],
                         'RESULTFORMAT': RESULTFORMATitem[itemlist[j]],
-                        'SPECIFICATIONve':SPECIFICATIONve,
+                        'SPECIFICATIONve': SPECIFICATIONve,
                         // "data": datamaster['FINAL'][inslist[i]][itemlist[j]],
                         "data": datasetraw,
                         "data_ans": datamaster['FINAL_ANS'][itemlist[j]],
@@ -191,12 +198,12 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
 
                       }
 
-                    } else if ( RESULTFORMATitem[itemlist[j]] === 'OCR') {
+                    } else if (RESULTFORMATitem[itemlist[j]] === 'OCR') {
 
                       dataobject['PO'] = datamaster['PO'];
                       dataobject["itemlist"] = itemlist,
 
-                      dataobject['MATCP'] = datamaster['MATCP'];
+                        dataobject['MATCP'] = datamaster['MATCP'];
                       dataobject['CUSTOMER'] = datamaster['CUSTOMER'];
                       dataobject['PART'] = datamaster['PART'];
                       dataobject['PARTNAME'] = datamaster['PARTNAME'];
@@ -217,20 +224,20 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
                           // // console.log(datainside['PIC2data']);
                           // // console.log(datainside['PIC3data']);
                           // // console.log(datainside['PIC4data']);
-         
+
                           for (let v = 0; v < datainside['PSC1'].length; v++) {
                             // datasetrawin.push(datainside[v]['PO3'].replace("\n", "").replace("\r", ""));
                             datasetrawin.push(datainside['PSC1'][v]['PIC1data']);
                             datasetrawin.push(datainside['PSC1'][v]['PIC2data']);
                             datasetrawin.push(datainside['PSC1'][v]['PIC3data']);
                             datasetrawin.push(datainside['PSC1'][v]['PIC4data']);
-                            
+
                             // console.log(datainside['PSC1'][v]['PIC1data'])
 
                           }
                           datasetraw.push(datasetrawin);
-                        
-                              
+
+
                         }
                       }
 
