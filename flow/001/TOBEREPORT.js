@@ -29,7 +29,7 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
   // let dataobject = {};
   let dataolist = [];
   let RESULTFORMATitem = {};
-let SPECIFICATIONve = {};
+  let SPECIFICATIONve = {};
 
 
   if (input['MATCP'] != undefined && input['STARTyear'] != undefined && input['STARTmonth'] != undefined && input['STARTday'] != undefined && input['ENDyear'] != undefined && input['ENDmonth'] != undefined && input['ENDday'] != undefined) {
@@ -40,8 +40,8 @@ let SPECIFICATIONve = {};
     let dc = new Date();
     dc.setFullYear(input['ENDyear'], `${parseInt(input['ENDmonth']) - 1}`, input['ENDday']);
 
-    console.log(d)
-    console.log(dc)
+    // console.log(d)
+    // console.log(dc)
 
     let date = {
       "$gte": d,
@@ -101,9 +101,11 @@ let SPECIFICATIONve = {};
 
               if (datamaster['FINAL'][inslist[i]] != undefined) {
 
+      
+
 
                 if (datamaster['FINAL'][inslist[i]][itemlist[j]] != undefined) {
-                  if (RESULTFORMATitem[itemlist[j]] !== 'Text' && RESULTFORMATitem[itemlist[j]] !== 'OCR' && RESULTFORMATitem[itemlist[j]] !== 'Picture') {
+                  if (RESULTFORMATitem[itemlist[j]] !== 'Text' ) {
 
                     //----------------------------------------------------------------------------------------
 
@@ -133,7 +135,7 @@ let SPECIFICATIONve = {};
                             // datasetrawin.push(datainside[v]['PO3'].replace("\n", "").replace("\r", ""));
                             datasetrawin.push(datainside[v]['PO3']);
                  
-                            console.log(datainside)
+                            // console.log(datainside)
 
                           }
                           datasetraw.push(datasetrawin);
@@ -172,7 +174,7 @@ let SPECIFICATIONve = {};
                           for (let v = 0; v < datainside.length; v++) {
                             // datasetrawin.push(datainside[v]['PO3'].replace("\n", "").replace("\r", ""));
                             datasetrawin.push(datainside[v]['PO3']);
-                            console.log(datainside)
+                            // console.log(datainside)
 
                           }
                           datasetraw.push(datasetrawin);
@@ -188,8 +190,57 @@ let SPECIFICATIONve = {};
 
                       }
 
-                    } else if (RESULTFORMATitem[itemlist[j]] === 'Picture') {
+                    } else if ( RESULTFORMATitem[itemlist[j]] === 'OCR') {
 
+                      dataobject['PO'] = datamaster['PO'];
+                      dataobject["itemlist"] = itemlist,
+
+                      dataobject['MATCP'] = datamaster['MATCP'];
+                      dataobject['CUSTOMER'] = datamaster['CUSTOMER'];
+                      dataobject['PART'] = datamaster['PART'];
+                      dataobject['PARTNAME'] = datamaster['PARTNAME'];
+                      dataobject['FG_CHARG'] = datamaster['FG_CHARG'];
+                      dataobject['dateG'] = datamaster['dateG'];
+                      subpicdata = Object.keys(datamaster['FINAL'][inslist[i]][itemlist[j]])
+
+                      let datasetraw = [];
+                      if (subpicdata.length > 0) {
+
+                        for (let k = 0; k < subpicdata.length; k++) {
+                          let datainside = datamaster['FINAL'][inslist[i]][itemlist[j]];
+                          // console.log("--------------")
+                          // console.log(datainside['PSC1'])
+                          // console.log("--------------")
+                          let datasetrawin = [];
+                          // // console.log(datainside['PIC1data']);
+                          // // console.log(datainside['PIC2data']);
+                          // // console.log(datainside['PIC3data']);
+                          // // console.log(datainside['PIC4data']);
+         
+                          for (let v = 0; v < datainside['PSC1'].length; v++) {
+                            // datasetrawin.push(datainside[v]['PO3'].replace("\n", "").replace("\r", ""));
+                            datasetrawin.push(datainside['PSC1'][v]['PIC1data']);
+                            datasetrawin.push(datainside['PSC1'][v]['PIC2data']);
+                            datasetrawin.push(datainside['PSC1'][v]['PIC3data']);
+                            datasetrawin.push(datainside['PSC1'][v]['PIC4data']);
+                            
+                            // console.log(datainside['PSC1'][v]['PIC1data'])
+
+                          }
+                          datasetraw.push(datasetrawin);
+                        
+                              
+                        }
+                      }
+
+                      dataobject[itemlist[j]] = {
+                        "name": itemobject[itemlist[j]],
+                        "itemcode": itemlist[j],
+                        'RESULTFORMAT': RESULTFORMATitem[itemlist[j]],
+                        "data": datasetraw,
+                        // "data_ans": datamaster['FINAL_ANS'][itemlist[j] + '_point'],
+
+                      }
 
 
                     }
