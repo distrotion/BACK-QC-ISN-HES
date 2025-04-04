@@ -191,12 +191,14 @@ router.post('/GETINtoAPPINSHES', async (req, res) => {
           "QUANTITY": dbsap['QUANTITY'] || '',
           // "PROCESS":dbsap ['PROCESS'] || '',
           // "CUSLOTNO": dbsap['CUSLOTNO'] || '',
+          //CUST_FULLNM
+          //findcp[0]['CUST_FULLNM'] || '',
           "CUSLOTNO":  cuslot,
           "FG_CHARG": dbsap['FG_CHARG'] || '',
           "PARTNAME_PO": dbsap['PARTNAME_PO'] || '',
           "PART_PO": dbsap['PART_PO'] || '',
-          "CUSTNAME_s": dbsap['CUSTNAME'] || '',
-          "CUSTNAME": dbsap['CUST_FULLNM']|| '',
+          "CUSTNAME_s": dbsap['CUST_FULLNM'] || '',
+          "CUSTNAME": findcp[0]['CUST_FULLNM'] || '',
           "UNITSAP": dbsap['UNIT'] || '',
           //----------------------
           "ItemPick": ItemPickoutP2, //---->
