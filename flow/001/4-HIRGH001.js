@@ -460,6 +460,16 @@ router.post('/HIRGH001-confirmdata', async (req, res) => {
   return res.json(output);
 });
 
+router.post('/HIRGH001-confirmdata-set', async (req, res) => {
+  //-------------------------------------
+  console.log('--HIHMV001-confirmdata-set--');
+  console.log(req.body);
+  let input = req.body;
+  HIRGH001db['confirmdata'] = input;
+  //-------------------------------------
+  res.json('ok');
+});
+
 
 
 router.post('/HIRGH001-feedback', async (req, res) => {
