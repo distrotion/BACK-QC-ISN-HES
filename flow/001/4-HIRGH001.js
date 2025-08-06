@@ -427,7 +427,7 @@ router.post('/HIRGH001-confirmdata', async (req, res) => {
   //-------------------------------------
   let output = 'NOK';
   //-------------------------------------
-  try {
+ try {
     let datapush = HIRGH001db['preview'][0]
 
     if (HIRGH001db['RESULTFORMAT'] === 'Graph') {
@@ -448,7 +448,7 @@ router.post('/HIRGH001-confirmdata', async (req, res) => {
       pushdata['V5'] = HIRGH001db['confirmdata'].length + 1
       pushdata['V1'] = `${HIRGH001db['confirmdata'].length + 1}:${pushdata['V1']}`
 
-      // HIRGH001db['confirmdata'].push(pushdata);
+      HIRGH001db['confirmdata'].push(pushdata);
       HIRGH001db['preview'] = [];
       output = 'OK';
     }
@@ -460,19 +460,19 @@ router.post('/HIRGH001-confirmdata', async (req, res) => {
   return res.json(output);
 });
 
-// router.post('/HIRGH001-confirmdata-set', async (req, res) => {
-//   //-------------------------------------
-//   console.log('--HIHMV001-confirmdata-set--');
-//   console.log(req.body);
-//   let input = req.body;
-//   // HIRGH001db['confirmdata'] = input;
-//   if(input.length>0){
-//   HIRGH001db['confirmdata'].push(input[0]);
-//   }
+router.post('/HIRGH001-confirmdata-set', async (req, res) => {
+  //-------------------------------------
+  console.log('--HIHMV001-confirmdata-set--');
+  console.log(req.body);
+  let input = req.body;
+  // HIRGH001db['confirmdata'] = input;
+  if(input.length>0){
+  HIRGH001db['confirmdata'].push(input[0]);
+  }
 
-//   //-------------------------------------
-//   res.json('ok');
-// });
+  //-------------------------------------
+  res.json('ok');
+});
 
 
 
