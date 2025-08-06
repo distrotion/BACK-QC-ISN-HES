@@ -17,7 +17,7 @@ router.post('/upqcdata', async (req, res) => {
 router.post('/rugamplitude', async (req, res) => {
   //-------------------------------------
   console.log('--rugamplitude--');
-  console.log(req.body);
+  // console.log(req.body);
   let input = req.body;
   let output = '';
   //-------------------------------------
