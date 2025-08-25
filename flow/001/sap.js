@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 var mongodb = require('../../function/mongodb');
 var mssql = require('./../../function/mssql');
+var mssqlR = require('../../function/mssqlR');
 
 
 //----------------- DATABASE
@@ -31,25 +32,25 @@ router.post('/sap', async (req, res) => {
     if (db['recordsets'].length > 0) {
       output = db['recordsets'][0]
     }
-    let getdata = await mongodb.find(MAIN_DATA, MAIN,{});
-    let getdataINSPEC = await mongodb.find(PATTERN, PATTERN_01,{});
+    let getdata = await mongodb.find(MAIN_DATA, MAIN, {});
+    let getdataINSPEC = await mongodb.find(PATTERN, PATTERN_01, {});
 
-    for(i=0;i<output.length;i++){
-      for(j=0;j<getdata.length;j++){
-        if(output[i]['PO'] === getdata[j]['PO']){
+    for (i = 0; i < output.length; i++) {
+      for (j = 0; j < getdata.length; j++) {
+        if (output[i]['PO'] === getdata[j]['PO']) {
           output[i]['QCstatus'] = 'ip';
-          if(getdata[j]['ALL_DONE'] !== undefined){
+          if (getdata[j]['ALL_DONE'] !== undefined) {
             output[i]['QCstatus'] = 'finish';
           }
           break;
-        }else{
+        } else {
           output[i]['QCstatus'] = 'nohave';
         }
       }
-      for(j=0;j<getdataINSPEC.length;j++){
-        if(output[i]['CP'] === getdataINSPEC[j]['CP']){
+      for (j = 0; j < getdataINSPEC.length; j++) {
+        if (output[i]['CP'] === getdataINSPEC[j]['CP']) {
           output[i]['create'] = 'created';
-          if(getdataINSPEC[j]['permission']||'No Active' === 'Active'){
+          if (getdataINSPEC[j]['permission'] || 'No Active' === 'Active') {
             output[i]['permission'] = 'Active';
           }
         }
@@ -84,10 +85,66 @@ router.get('/testmongo', async (req, res) => {
   console.log(req.body);
   //-------------------------------------
 
-  let getdata = await mongodb.findsome(MAIN_DATA, MAIN,{});
+  let getdata = await mongodb.findsome(MAIN_DATA, MAIN, {});
 
   //-------------------------------------
   res.json(getdata);
+});
+
+
+router.post('/setfromsar', async (req, res) => {
+  //-------------------------------------
+  console.log('--setfromsar--');
+  console.log(req.body);
+  let input = req.body;
+  let output = [];
+  //-------------------------------------
+
+  if (input['ReqNO'] != undefined && input['Number'] != undefined) {
+    let querySV = `SELECT * FROM [SAR].[dbo].[Instrument_CnUV] where ReqNo = '${input['ReqNO']}'`
+    let db = await mssqlR.qureyR(querySV);
+
+    if (db['recordsets'] != undefined) {
+      if (['recordsets'].length > 0) {
+        let setdata = db['recordsets'][0];
+
+        const timestamp = Date.now();
+        console.log(timestamp);
+
+        let oout = {
+          "ReqNO":input['ReqNO'],
+          "Number":input['Number'],
+          "setdata":setdata,
+          "timestamp":timestamp
+         };
+
+         var ins = await mongodb.insertMany(PATTERN,  "RMCN", [oout]);
+         output = oout
+      }
+    }
+  }
+
+
+
+  return res.json(output);
+});
+
+router.post('/getfromsar', async (req, res) => {
+  //-------------------------------------
+  console.log('--getfromsar--');
+  console.log(req.body);
+  let input = req.body;
+  let output = [];
+  //-------------------------------------
+
+  if (input['ReqNO'] != undefined ) {
+    let getdata = await mongodb.find(PATTERN, "RMCN", {});
+    output = getdata;
+  }
+
+
+
+  return res.json(output);
 });
 
 

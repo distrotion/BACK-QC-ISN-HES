@@ -180,7 +180,9 @@ router.post('/ReportListACT', async (req, res) => {
       //
       // console.log(Object.getOwnPropertyNames(find[i]["FINAL"]));
       let INS = Object.getOwnPropertyNames(find[i]["FINAL"]);
-      console.log("-------------------" + i)
+      console.log(find[i]['PO']);
+      console.log(INS);
+      // console.log("-------------------" + i)
       let depDATAlist = [];
       for (j = 0; j < INS.length; j++) {
         let Item = find[i]["FINAL"][INS[j]];
@@ -189,6 +191,7 @@ router.post('/ReportListACT', async (req, res) => {
         for (k = 0; k < Itemlist.length; k++) {
 
           if (Item[Itemlist[k]]["PSC1"] != undefined) {
+              // console.log(Itemlist[k]);
 
             if (Item[Itemlist[k]]["PSC1"].length === undefined) {
               // console.log(Item[Itemlist[k]]["PSC1"]["PO1"]);
@@ -197,9 +200,11 @@ router.post('/ReportListACT', async (req, res) => {
                 if (masterITEMs[s]["masterID"] === Itemlist[k]) {
                   // console.log(masterITEMs[s]["ITEMs"]);
                   name = masterITEMs[s]["ITEMs"];
+             
                   let data = {}
                   data[name] = Item[Itemlist[k]]["PSC1"]["PO2"];
                   if (data[name].length > 0) {
+                    
                     depDATAlist.push(data)
                   }
                   break;
@@ -220,6 +225,7 @@ router.post('/ReportListACT', async (req, res) => {
                       name = masterITEMs[s]["ITEMs"];
                       let data = {}
                       data[name] = [deppdata[l]["PIC1data"], deppdata[l]["PIC2data"], deppdata[l]["PIC3data"], deppdata[l]["PIC4data"]];
+                      
                       if (data[name].length > 0) {
                         depDATAlist.push(data)
                       }
@@ -240,8 +246,9 @@ router.post('/ReportListACT', async (req, res) => {
                       if (masterITEMs[s]["masterID"] === Itemlist[k]) {
                         // console.log(masterITEMs[s]["ITEMs"]);
                         name = masterITEMs[s]["ITEMs"];
+                             console.log(name);
                         let data = {}
-                        data[name] = deppdata[l]["PO3"];
+                        data[name] = `${deppdata[l]["PO3"]}`;
                         if (data[name].length > 0) {
                           depDATAlist.push(data)
                         }

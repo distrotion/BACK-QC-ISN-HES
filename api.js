@@ -12,6 +12,8 @@ router.use(require("./flow/001/5-HIMIC001"))
 router.use(require("./flow/001/6-MCSINSHES"))
 router.use(require("./flow/001/7-LCRUVS001"))
 router.use(require("./flow/001/8-HIMICM001"))
+router.use(require("./flow/001/9-TPGMCSCPR"))
+//
 router.use(require("./flow/001/INSFINISH"))
 router.use(require("./flow/001/cleardata"))
 router.use(require("./flow/001/GRAPHMASTER"))
