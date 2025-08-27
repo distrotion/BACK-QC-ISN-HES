@@ -13,7 +13,7 @@ let day = d;
 
 //----------------- SETUP
 
-let NAME_INS = 'TPG-MCS-CPR'
+let NAME_INS = 'MCS-INSHES2'
 
 //----------------- DATABASE
 
@@ -92,6 +92,15 @@ router.get('/CHECK-TPGMCSCPR', async (req, res) => {
 
   return res.json(TPGMCSCPRdb['PO']);
 });
+//   
+
+router.post('/CHECK-TPGMCSCPR-order', async (req, res) => {
+    console.log('--CHECK-TPGMCSCPR-order--');
+
+  let findpo = await mongodb.find(MAIN_DATA, MAIN, { "PO": TPGMCSCPRdb['PO'] });
+
+  return res.json(findpo);
+});
 
 
 router.post('/TPGMCSCPRdb', async (req, res) => {
@@ -150,7 +159,10 @@ router.post('/GETINtoTPGMCSCPR', async (req, res) => {
 
         for (i = 0; i < findcp[0]['FINAL'].length; i++) {
           for (j = 0; j < masterITEMs.length; j++) {
+             
             if (findcp[0]['FINAL'][i]['ITEMs'] === masterITEMs[j]['masterID']) {
+         
+             
               ItemPickout.push(masterITEMs[j]['ITEMs']);
               ItemPickcodeout.push({ "key": masterITEMs[j]['masterID'], "value": masterITEMs[j]['ITEMs'], "METHOD": findcp[0]['FINAL'][i]['METHOD'] });
             }
@@ -162,6 +174,8 @@ router.post('/GETINtoTPGMCSCPR', async (req, res) => {
         for (i = 0; i < ItemPickcodeout.length; i++) {
           for (j = 0; j < MACHINEmaster.length; j++) {
             if (ItemPickcodeout[i]['METHOD'] === MACHINEmaster[j]['masterID']) {
+              
+                console.log(req.body);
               if (MACHINEmaster[j]['MACHINE'].includes(NAME_INS)) {
                 ItemPickoutP2.push(ItemPickout[i]);
                 ItemPickcodeoutP2.push(ItemPickcodeout[i]);
@@ -211,6 +225,8 @@ router.post('/GETINtoTPGMCSCPR', async (req, res) => {
           //----------------------
           "ItemPick": ItemPickoutP2, //---->
           "ItemPickcode": ItemPickcodeoutP2, //---->
+          // "ItemPick": ItemPickout, //---->
+          // "ItemPickcode": ItemPickcodeout, //---->
           "POINTs": "",
           "PCS": "",
           "PCSleft": "",
