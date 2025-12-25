@@ -172,9 +172,35 @@ router.post('/ReportListACT', async (req, res) => {
         "$lt": dc
       }
     }
+    let date = {
+      "ALL_DONE": 'DONE',
+      "dateG":
+      {
+        "$gte": d,
+        "$lt": dc
+      }
+    }
     // console.log(out)
-    let find = await mongodb.find(MAIN_DATA, MAIN, out);
+    // let find = await mongodb.find(MAIN_DATA, MAIN, out);
     let masterITEMs = await mongodb.find(master_FN, ITEMs, {});
+
+    inMAINDB = 'MAIN';
+    let findMATCP1 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    inMAINDB = 'MAIN_130525';
+    let findMATCP2 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    inMAINDB = 'MAIN_210624';
+    let findMATCP3 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    inMAINDB = 'MAIN_251023';
+    let findMATCP4 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+
+
+    let merged = [...findMATCP1, ...findMATCP2, ...findMATCP3, ...findMATCP4];
+    let seen = new Set();
+    let find = merged.filter(item => {
+      if (seen.has(item.PO)) return false; // id ซ้ำ — ตัดทิ้ง (ของ list หลัง)
+      seen.add(item.PO);
+      return true;
+    });
 
     for (i = 0; i < find.length; i++) {
       //
@@ -191,7 +217,7 @@ router.post('/ReportListACT', async (req, res) => {
         for (k = 0; k < Itemlist.length; k++) {
 
           if (Item[Itemlist[k]]["PSC1"] != undefined) {
-              // console.log(Itemlist[k]);
+            // console.log(Itemlist[k]);
 
             if (Item[Itemlist[k]]["PSC1"].length === undefined) {
               // console.log(Item[Itemlist[k]]["PSC1"]["PO1"]);
@@ -200,11 +226,11 @@ router.post('/ReportListACT', async (req, res) => {
                 if (masterITEMs[s]["masterID"] === Itemlist[k]) {
                   // console.log(masterITEMs[s]["ITEMs"]);
                   name = masterITEMs[s]["ITEMs"];
-             
+
                   let data = {}
                   data[name] = Item[Itemlist[k]]["PSC1"]["PO2"];
                   if (data[name].length > 0) {
-                    
+
                     depDATAlist.push(data)
                   }
                   break;
@@ -225,7 +251,7 @@ router.post('/ReportListACT', async (req, res) => {
                       name = masterITEMs[s]["ITEMs"];
                       let data = {}
                       data[name] = [deppdata[l]["PIC1data"], deppdata[l]["PIC2data"], deppdata[l]["PIC3data"], deppdata[l]["PIC4data"]];
-                      
+
                       if (data[name].length > 0) {
                         depDATAlist.push(data)
                       }
@@ -246,7 +272,7 @@ router.post('/ReportListACT', async (req, res) => {
                       if (masterITEMs[s]["masterID"] === Itemlist[k]) {
                         // console.log(masterITEMs[s]["ITEMs"]);
                         name = masterITEMs[s]["ITEMs"];
-                             console.log(name);
+                        console.log(name);
                         let data = {}
                         data[name] = `${deppdata[l]["PO3"]}`;
                         if (data[name].length > 0) {
@@ -401,7 +427,7 @@ router.post('/CopyReport', async (req, res) => {
                 console.log(JSON.stringify(response.data));
               })
 
-              let config2 = {
+            let config2 = {
               method: 'post',
               maxBodyLength: Infinity,
               url: 'http://172.20.30.46:2200/coppy-2',
@@ -415,7 +441,7 @@ router.post('/CopyReport', async (req, res) => {
                 console.log(JSON.stringify(response.data));
               })
 
-              let config3 = {
+            let config3 = {
               method: 'post',
               maxBodyLength: Infinity,
               url: 'http://172.20.30.46:2200/coppy-3',

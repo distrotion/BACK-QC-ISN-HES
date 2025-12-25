@@ -57,9 +57,27 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
     }
 
     let findITEMs = await mongodb.find(master_FN, ITEMs, {});
-    let findMATCP = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    // let findMATCP = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
     // let findMATCP = await mongodb.find(MAIN_DATA, MAIN, { "MATCP": input['MATCP'] });
     let findPATTERN = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['MATCP'] });
+
+    inMAINDB = 'MAIN';
+    let findMATCP1 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    inMAINDB = 'MAIN_130525';
+    let findMATCP2 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    inMAINDB = 'MAIN_210624';
+    let findMATCP3 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    inMAINDB = 'MAIN_251023';
+    let findMATCP4 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+   
+
+    let merged = [...findMATCP1, ...findMATCP2, ...findMATCP3, ...findMATCP4];
+    let seen = new Set();
+    let findMATCP = merged.filter(item => {
+      if (seen.has(item.PO)) return false; // id ซ้ำ — ตัดทิ้ง (ของ list หลัง)
+      seen.add(item.PO);
+      return true;
+    });
 
 
 
