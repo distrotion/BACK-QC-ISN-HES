@@ -183,17 +183,17 @@ router.post('/ReportListACT', async (req, res) => {
     // console.log(out)
     // let find = await mongodb.find(MAIN_DATA, MAIN, out);
     let masterITEMs = await mongodb.find(master_FN, ITEMs, {});
-
-    inMAINDB = 'MAIN';
-    let findMATCP1 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+console.log(date)
+    let inMAINDB = 'MAIN';
+    let findMATCP1 = await mongodb.find(MAIN_DATA, 'MAIN', date);
     inMAINDB = 'MAIN_130525';
-    let findMATCP2 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    let findMATCP2 = await mongodb.find(MAIN_DATA, 'MAIN_130525', date);
     inMAINDB = 'MAIN_210624';
-    let findMATCP3 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    let findMATCP3 = await mongodb.find(MAIN_DATA, 'MAIN_210624', date);
     inMAINDB = 'MAIN_251023';
-    let findMATCP4 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    let findMATCP4 = await mongodb.find(MAIN_DATA, 'MAIN_251023', date);
 
-
+console.log("---------->")
     let merged = [...findMATCP1, ...findMATCP2, ...findMATCP3, ...findMATCP4];
     let seen = new Set();
     let find = merged.filter(item => {

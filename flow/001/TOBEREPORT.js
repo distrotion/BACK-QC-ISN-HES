@@ -62,13 +62,13 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
     let findPATTERN = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['MATCP'] });
 
     inMAINDB = 'MAIN';
-    let findMATCP1 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    let findMATCP1 = await mongodb.find(MAIN_DATA, inMAINDB, date);
     inMAINDB = 'MAIN_130525';
-    let findMATCP2 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    let findMATCP2 = await mongodb.find(MAIN_DATA, inMAINDB, date);
     inMAINDB = 'MAIN_210624';
-    let findMATCP3 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    let findMATCP3 = await mongodb.find(MAIN_DATA, inMAINDB, date);
     inMAINDB = 'MAIN_251023';
-    let findMATCP4 = await mongodb.find(MAIN_DATA, inMAINDB, { "MATCP": input['MATCP'], "ALL_DONE": "DONE", "dateG": date });
+    let findMATCP4 = await mongodb.find(MAIN_DATA, inMAINDB, date);
    
 
     let merged = [...findMATCP1, ...findMATCP2, ...findMATCP3, ...findMATCP4];
