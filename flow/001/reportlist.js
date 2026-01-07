@@ -192,9 +192,11 @@ console.log(date)
     let findMATCP3 = await mongodb.find(MAIN_DATA, 'MAIN_210624', date);
     inMAINDB = 'MAIN_251023';
     let findMATCP4 = await mongodb.find(MAIN_DATA, 'MAIN_251023', date);
+    //
+    let findMATCP5 = await mongodb.find(MAIN_DATA, 'MAIN_261225', date);
 
 console.log("---------->")
-    let merged = [...findMATCP1, ...findMATCP2, ...findMATCP3, ...findMATCP4];
+    let merged = [...findMATCP1, ...findMATCP2, ...findMATCP3, ...findMATCP4, ...findMATCP5];
     let seen = new Set();
     let find = merged.filter(item => {
       if (seen.has(item.PO)) return false; // id ซ้ำ — ตัดทิ้ง (ของ list หลัง)
