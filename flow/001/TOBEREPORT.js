@@ -73,7 +73,7 @@ router.post('/TOBEREPOR/GETDATA', async (req, res) => {
     let findMATCP5 = await mongodb.find(MAIN_DATA, 'MAIN_261225', date);
    
 
-    let merged = [...findMATCP1, ...findMATCP2, ...findMATCP3, ...findMATCP4];
+    let merged = [...findMATCP1, ...findMATCP2, ...findMATCP3, ...findMATCP4, ...findMATCP5];
     let seen = new Set();
     let findMATCP = merged.filter(item => {
       if (seen.has(item.PO)) return false; // id ซ้ำ — ตัดทิ้ง (ของ list หลัง)
