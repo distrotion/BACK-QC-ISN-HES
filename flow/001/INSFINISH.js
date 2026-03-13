@@ -5,8 +5,6 @@ var mssql = require('./../../function/mssql');
 
 //----------------- date
 
-const d = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });;
-let day = d;
 
 //----------------- DATABASE
 
@@ -75,8 +73,8 @@ router.post('/FINISHtoDB', async (req, res) => {
       let MACHINEmaster = await mongodb.find(master_FN, MACHINE, {});
 
       let ItemPickcodeout = [];
-      for (i = 0; i < findcp[0]['FINAL'].length; i++) {
-        for (j = 0; j < masterITEMs.length; j++) {
+      for (let i = 0; i < findcp[0]['FINAL'].length; i++) {
+        for (let j = 0; j < masterITEMs.length; j++) {
           if (findcp[0]['FINAL'][i]['ITEMs'] === masterITEMs[j]['masterID']) {
             ItemPickcodeout.push({ "key": masterITEMs[j]['masterID'], "value": masterITEMs[j]['ITEMs'], "METHOD": findcp[0]['FINAL'][i]['METHOD'] });
           }
@@ -96,7 +94,7 @@ router.post('/FINISHtoDB', async (req, res) => {
       let objectR = Object.getOwnPropertyNames(input_S2_1)
       let findMF = false;
 
-      for (i = 0; i < objectR.length; i++) {
+      for (let i = 0; i < objectR.length; i++) {
         if (objectR[i] === input_S2_2['MeasurmentFOR']) {
           findMF = true;
         }
@@ -129,7 +127,7 @@ router.post('/FINISHtoDB', async (req, res) => {
         let nameTool = "";
         let buff = input_S3_1[nameMF];
         let objectB = Object.getOwnPropertyNames(buff)
-        for (j = 0; j < objectB.length; j++) {
+        for (let j = 0; j < objectB.length; j++) {
           if (objectB[j] === input_S3_2['tool']) {
             nameTool = objectB[j];
           }
@@ -158,7 +156,7 @@ router.post('/FINISHtoDB', async (req, res) => {
 
           let buff = input_S4_1[nameMF];
           let objectB = Object.getOwnPropertyNames(buff)
-          for (j = 0; j < objectB.length; j++) {
+          for (let j = 0; j < objectB.length; j++) {
             if (objectB[j] === input_S4_2.tool) {
               nameTool = objectB[j];
             }
@@ -286,8 +284,8 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
     let MACHINEmaster = await mongodb.find(master_FN, MACHINE, {});
 
     let ItemPickcodeout = [];
-    for (i = 0; i < findcp[0]['FINAL'].length; i++) {
-      for (j = 0; j < masterITEMs.length; j++) {
+    for (let i = 0; i < findcp[0]['FINAL'].length; i++) {
+      for (let j = 0; j < masterITEMs.length; j++) {
         if (findcp[0]['FINAL'][i]['ITEMs'] === masterITEMs[j]['masterID']) {
           ItemPickcodeout.push({ "key": masterITEMs[j]['masterID'], "value": masterITEMs[j]['ITEMs'], "METHOD": findcp[0]['FINAL'][i]['METHOD'] });
         }
@@ -307,7 +305,7 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
     let objectR = Object.getOwnPropertyNames(input_S2_1)
     let findMF = false;
 
-    for (i = 0; i < objectR.length; i++) {
+    for (let i = 0; i < objectR.length; i++) {
       if (objectR[i] === input_S2_2['MeasurmentFOR']) {
         findMF = true;
       }
@@ -350,7 +348,7 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
       let nameTool = "";
       let buff = input_S3_1[nameMF];
       let objectB = Object.getOwnPropertyNames(buff)
-      for (j = 0; j < objectB.length; j++) {
+      for (let j = 0; j < objectB.length; j++) {
         if (objectB[j] === input_S3_2['tool']) {
           nameTool = objectB[j];
         }
@@ -389,7 +387,7 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
 
         let buff = input_S4_1[nameMF];
         let objectB = Object.getOwnPropertyNames(buff)
-        for (j = 0; j < objectB.length; j++) {
+        for (let j = 0; j < objectB.length; j++) {
           if (objectB[j] === input_S4_2.tool) {
             nameTool = objectB[j];
           }
@@ -509,8 +507,8 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
 //     let MACHINEmaster = await mongodb.find(master_FN, MACHINE, {});
 
 //     let ItemPickcodeout = [];
-//     for (i = 0; i < findcp[0]['FINAL'].length; i++) {
-//       for (j = 0; j < masterITEMs.length; j++) {
+//     for (let i = 0; i < findcp[0]['FINAL'].length; i++) {
+//       for (let j = 0; j < masterITEMs.length; j++) {
 //         if (findcp[0]['FINAL'][i]['ITEMs'] === masterITEMs[j]['masterID']) {
 //           ItemPickcodeout.push({ "key": masterITEMs[j]['masterID'], "value": masterITEMs[j]['ITEMs'], "METHOD": findcp[0]['FINAL'][i]['METHOD'] });
 //         }
@@ -530,7 +528,7 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
 //     let objectR = Object.getOwnPropertyNames(input_S2_1)
 //     let findMF = false;
 
-//     for (i = 0; i < objectR.length; i++) {
+//     for (let i = 0; i < objectR.length; i++) {
 //       if (objectR[i] === input_S2_2['MeasurmentFOR']) {
 //         findMF = true;
 //       }
@@ -563,7 +561,7 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
 //       let nameTool = "";
 //       let buff = input_S3_1[nameMF];
 //       let objectB = Object.getOwnPropertyNames(buff)
-//       for (j = 0; j < objectB.length; j++) {
+//       for (let j = 0; j < objectB.length; j++) {
 //         if (objectB[j] === input_S3_2['tool']) {
 //           nameTool = objectB[j];
 //         }
@@ -592,7 +590,7 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
 
 //         let buff = input_S4_1[nameMF];
 //         let objectB = Object.getOwnPropertyNames(buff)
-//         for (j = 0; j < objectB.length; j++) {
+//         for (let j = 0; j < objectB.length; j++) {
 //           if (objectB[j] === input_S4_2.tool) {
 //             nameTool = objectB[j];
 //           }
@@ -674,7 +672,7 @@ router.post('/GRAPH-recal', async (req, res) => {
       let LISTbuffer = [];
       let ITEMleftVALUEout = [];
 
-      for (i = 0; i < oblist.length; i++) {
+      for (let i = 0; i < oblist.length; i++) {
         LISTbuffer.push(...ob[oblist[i]])
       }
 
@@ -683,7 +681,7 @@ router.post('/GRAPH-recal', async (req, res) => {
 
         //
         let axis_data = [];
-        for (i = 0; i < LISTbuffer.length; i++) {
+        for (let i = 0; i < LISTbuffer.length; i++) {
           if (LISTbuffer[i]['PO1'] !== 'Mean') {
             axis_data.push({ x: parseFloat(LISTbuffer[i].PO8), y: parseFloat(LISTbuffer[i].PO3) });
           }
@@ -699,7 +697,7 @@ router.post('/GRAPH-recal', async (req, res) => {
 
         //-----------------core
         let RawPoint = [];
-        for (i = 0; i < axis_data.length - 1; i++) {
+        for (let i = 0; i < axis_data.length - 1; i++) {
           if (core <= axis_data[i].y && core >= axis_data[i + 1].y) {
             RawPoint.push({ Point1: axis_data[i], Point2: axis_data[i + 1] });
             break
@@ -726,20 +724,20 @@ router.post('/GRAPH-recal', async (req, res) => {
         //
       } else if (input["MODE"] == 'CDE') {
         let axis_data = [];
-        for (i = 0; i < LISTbuffer.length; i++) {
+        for (let i = 0; i < LISTbuffer.length; i++) {
           if (LISTbuffer[i]['PO1'] !== 'Mean') {
             axis_data.push({ x: parseFloat(LISTbuffer[i].PO8), y: parseFloat(LISTbuffer[i].PO3) });
           }
         }
 
         let d = []
-        for (i = 0; i < axis_data.length - 1; i++) {
+        for (let i = 0; i < axis_data.length - 1; i++) {
           d.push((axis_data[i].y - axis_data[i + 1].y) / (axis_data[i + 1].x - axis_data[i].x));
         }
 
         let def = []
 
-        for (i = 0; i < d.length - 1; i++) {
+        for (let i = 0; i < d.length - 1; i++) {
           if (d[i] > d[i + 1]) {
             def[i] = (d[i] - d[i + 1])
           } else {
@@ -748,7 +746,7 @@ router.post('/GRAPH-recal', async (req, res) => {
 
         }
 
-        for (j = 0; j < def.length; j++) {
+        for (let j = 0; j < def.length; j++) {
           if (def[j] === Math.max(...def)) {
             pos = [j + 1, j + 2]
           }

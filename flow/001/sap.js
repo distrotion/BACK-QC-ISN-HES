@@ -35,8 +35,8 @@ router.post('/sap', async (req, res) => {
     let getdata = await mongodb.find(MAIN_DATA, MAIN, {});
     let getdataINSPEC = await mongodb.find(PATTERN, PATTERN_01, {});
 
-    for (i = 0; i < output.length; i++) {
-      for (j = 0; j < getdata.length; j++) {
+    for (let i = 0; i < output.length; i++) {
+      for (let j = 0; j < getdata.length; j++) {
         if (output[i]['PO'] === getdata[j]['PO']) {
           output[i]['QCstatus'] = 'ip';
           if (getdata[j]['ALL_DONE'] !== undefined) {
@@ -47,7 +47,7 @@ router.post('/sap', async (req, res) => {
           output[i]['QCstatus'] = 'nohave';
         }
       }
-      for (j = 0; j < getdataINSPEC.length; j++) {
+      for (let j = 0; j < getdataINSPEC.length; j++) {
         if (output[i]['CP'] === getdataINSPEC[j]['CP']) {
           output[i]['create'] = 'created';
           if (getdataINSPEC[j]['permission'] || 'No Active' === 'Active') {

@@ -62,15 +62,15 @@ router.post('/GETINSset', async (req, res) => {
   }
   if (findcp.length > 0 && findPO.length === 0) {
     if (findcp[0]['FINAL'] !== undefined && findcp[0]['FINAL'].length > 0) {
-      for (i = 0; i < findcp[0]['FINAL'].length; i++) {
+      for (let i = 0; i < findcp[0]['FINAL'].length; i++) {
         ITEMMETHODlist.push({ "ITEMs": findcp[0]['FINAL'][i]['ITEMs'], "METHOD": findcp[0]['FINAL'][i]['METHOD'] })
       }
 
       METHODmaster = await mongodb.find(master_FN, METHOD, {});
       MACHINEmaster = await mongodb.find(master_FN, MACHINE, {});
 
-      for (i = 0; i < ITEMMETHODlist.length; i++) {
-        for (j = 0; j < METHODmaster.length; j++) {
+      for (let i = 0; i < ITEMMETHODlist.length; i++) {
+        for (let j = 0; j < METHODmaster.length; j++) {
           if (ITEMMETHODlist[i]['METHOD'] === METHODmaster[j]['METHOD']) {
             for (k = 0; k < MACHINEmaster.length; k++) {
               if (METHODmaster[j]['METHOD'] === MACHINEmaster[k]['masterID']) {
@@ -91,14 +91,14 @@ router.post('/GETINSset', async (req, res) => {
       let CHECKlistnew = [];
       MACHINEmaster = await mongodb.find(master_FN, MACHINE, {});
 
-      for (i = 0; i < CHECKlist.length; i++) {
+      for (let i = 0; i < CHECKlist.length; i++) {
         if (CHECKlist[i]['FINISH'] === undefined) {
           CHECKlistnew.push(CHECKlist[i]);
         }
       }
       // console.log(CHECKlistnew);
-      for (i = 0; i < CHECKlistnew.length; i++) {
-        for (j = 0; j < MACHINEmaster.length; j++) {
+      for (let i = 0; i < CHECKlistnew.length; i++) {
+        for (let j = 0; j < MACHINEmaster.length; j++) {
           if (CHECKlistnew[i]['METHOD'] === MACHINEmaster[j]['masterID']) {
             if (MACHINEmaster[j]['MACHINE'].length > 0) {
               INSLIST.push(...MACHINEmaster[j]['MACHINE']);
@@ -114,15 +114,15 @@ router.post('/GETINSset', async (req, res) => {
     }
     catch (errin) {
       if (findcp.length > 0) {
-        for (i = 0; i < findcp[0]['FINAL'].length; i++) {
+        for (let i = 0; i < findcp[0]['FINAL'].length; i++) {
           ITEMMETHODlist.push({ "ITEMs": findcp[0]['FINAL'][i]['ITEMs'], "METHOD": findcp[0]['FINAL'][i]['METHOD'] })
         }
 
         METHODmaster = await mongodb.find(master_FN, METHOD, {});
         MACHINEmaster = await mongodb.find(master_FN, MACHINE, {});
 
-        for (i = 0; i < ITEMMETHODlist.length; i++) {
-          for (j = 0; j < METHODmaster.length; j++) {
+        for (let i = 0; i < ITEMMETHODlist.length; i++) {
+          for (let j = 0; j < METHODmaster.length; j++) {
             if (ITEMMETHODlist[i]['METHOD'] === METHODmaster[j]['METHOD']) {
               for (k = 0; k < MACHINEmaster.length; k++) {
                 if (METHODmaster[j]['METHOD'] === MACHINEmaster[k]['masterID']) {
@@ -199,14 +199,14 @@ router.post('/JUDEMENT', async (req, res) => {
       // console.log(LisDATA);
       // console.log(specList);
 
-      for (i = 0; i < specList.length; i++) {
+      for (let i = 0; i < specList.length; i++) {
         if (specList.length) {
           // console.log( specList[i][`ITEMs`]) 
           // console.log(typeof specList[i][`SPECIFICATIONve`]) 
           if (typeof specList[i][`SPECIFICATIONve`] === 'string') {
             // console.log(specList[i][`ITEMs`]) ;
             // console.log(LisDATA) ;
-            for (j = 0; j < LisDATA.length; j++) {
+            for (let j = 0; j < LisDATA.length; j++) {
               if (LisDATA[j][specList[i][`ITEMs`]] !== undefined) {
                 // console.log(LisDATA[j][specList[i][`ITEMs`]]) ;
                 let bufferDATA = Object.getOwnPropertyNames(LisDATA[j][specList[i][`ITEMs`]]);
@@ -233,7 +233,7 @@ router.post('/JUDEMENT', async (req, res) => {
           } else if (typeof specList[i][`SPECIFICATIONve`] === 'object') {
             // console.log(specList[i][`ITEMs`]) ;
             // console.log(LisDATA[0][specList[i][`ITEMs`]]) ;
-            for (j = 0; j < LisDATA.length; j++) {
+            for (let j = 0; j < LisDATA.length; j++) {
               if (LisDATA[j][specList[i][`ITEMs`]] !== undefined) {
                 // console.log(LisDATA[j][specList[i][`ITEMs`]]) ;
                 let bufferDATA = Object.getOwnPropertyNames(LisDATA[j][specList[i][`ITEMs`]]);
