@@ -3,11 +3,13 @@ const router = express.Router();
 var mongodb = require('../../function/mongodb');
 var mongodbINS = require('../../function/mongodbINS');
 var mssql = require('../../function/mssql');
-const axios = require("axios");
-const validate = require('../../function/validate');
+var request = require('request');
+const axios = require("../../function/axios");
 
 //----------------- date
 
+const d = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });;
+let day = d;
 
 //----------------- SETUP
 
@@ -28,7 +30,7 @@ let UNIT = 'UNIT';
 
 //----------------- dynamic
 
-let finddbbuffer = null;
+let finddbbuffer = [{}];
 
 let MCSINSHESdb = {
   "INS": NAME_INS,
@@ -74,7 +76,7 @@ let MCSINSHESdb = {
   "inspectionItemNAME": "",
   "tool": NAME_INS,
   "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
-  "dateupdatevalue": new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }),
+  "dateupdatevalue": day,
   //
   "PIC": "",
 }
@@ -110,10 +112,7 @@ router.post('/GETINtoMCSINSHES', async (req, res) => {
   let input = req.body;
   //-------------------------------------
   let output = 'NOK';
-  const v1 = validate.required(req.body, 'PO', 'CP');
-  const v2 = validate.isString(req.body, 'PO', 'CP');
-  if (validate.check(res, v1, v2)) return;
-  let check = MCSINSHESdb;
+  check = MCSINSHESdb;
   if (input['PO'] !== undefined && input['CP'] !== undefined && check['PO'] === '') {
     // let dbsap = await mssql.qurey(`select * FROM [SAPData_HES_ISN].[dbo].[tblSAPDetail] where [PO] = ${input['PO']}`);
 
@@ -123,7 +122,7 @@ router.post('/GETINtoMCSINSHES', async (req, res) => {
 
     if (findPO[0][`DATA`] != undefined && findPO[0][`DATA`].length > 0) {
       let dbsap = ''
-      for (let i = 0; i < findPO[0][`DATA`].length; i++) {
+      for (i = 0; i < findPO[0][`DATA`].length; i++) {
         if (findPO[0][`DATA`][i][`PO`] === input['PO']) {
           dbsap = findPO[0][`DATA`][i];
           // break;
@@ -142,8 +141,8 @@ router.post('/GETINtoMCSINSHES', async (req, res) => {
         let ItemPickout = [];
         let ItemPickcodeout = [];
 
-        for (let i = 0; i < findcp[0]['FINAL'].length; i++) {
-          for (let j = 0; j < masterITEMs.length; j++) {
+        for (i = 0; i < findcp[0]['FINAL'].length; i++) {
+          for (j = 0; j < masterITEMs.length; j++) {
             if (findcp[0]['FINAL'][i]['ITEMs'] === masterITEMs[j]['masterID']) {
               ItemPickout.push(masterITEMs[j]['ITEMs']);
               ItemPickcodeout.push({ "key": masterITEMs[j]['masterID'], "value": masterITEMs[j]['ITEMs'], "METHOD": findcp[0]['FINAL'][i]['METHOD'] });
@@ -153,8 +152,8 @@ router.post('/GETINtoMCSINSHES', async (req, res) => {
 
         let ItemPickoutP2 = []
         let ItemPickcodeoutP2 = [];
-        for (let i = 0; i < ItemPickcodeout.length; i++) {
-          for (let j = 0; j < MACHINEmaster.length; j++) {
+        for (i = 0; i < ItemPickcodeout.length; i++) {
+          for (j = 0; j < MACHINEmaster.length; j++) {
             if (ItemPickcodeout[i]['METHOD'] === MACHINEmaster[j]['masterID']) {
               if (MACHINEmaster[j]['MACHINE'].includes(NAME_INS)) {
                 ItemPickoutP2.push(ItemPickout[i]);
@@ -225,12 +224,11 @@ router.post('/GETINtoMCSINSHES', async (req, res) => {
           "inspectionItemNAME": "",
           "tool": NAME_INS,
           "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
-          "dateupdatevalue": new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }),
+          "dateupdatevalue": day,
           //
           "PIC": picS,
         }
 
-        finddbbuffer = null;
         output = 'OK';
 
 
@@ -261,12 +259,10 @@ router.post('/MCSINSHES-geteachITEM', async (req, res) => {
   MCSINSHESdb["UNIT"] = "";
   MCSINSHESdb["INTERSEC"] = "";
 
-  const vi = validate.required(req.body, 'ITEMs');
-  if (validate.check(res, vi)) return;
   let ITEMSS = '';
   let output = 'NOK';
 
-  for (let i = 0; i < MCSINSHESdb['ItemPickcode'].length; i++) {
+  for (i = 0; i < MCSINSHESdb['ItemPickcode'].length; i++) {
     if (MCSINSHESdb['ItemPickcode'][i]['value'] === inputB['ITEMs']) {
       ITEMSS = MCSINSHESdb['ItemPickcode'][i]['key'];
     }
@@ -285,7 +281,7 @@ router.post('/MCSINSHES-geteachITEM', async (req, res) => {
       let UNITdata = await mongodb.find(master_FN, UNIT, {});
       let masterITEMs = await mongodb.find(master_FN, ITEMs, { "masterID": MCSINSHESdb['inspectionItem'] });
 
-      for (let i = 0; i < findcp[0]['FINAL'].length; i++) {
+      for (i = 0; i < findcp[0]['FINAL'].length; i++) {
         if (findcp[0]['FINAL'][i]['ITEMs'] === input['ITEMs']) {
 
           // output = [{
@@ -310,7 +306,7 @@ router.post('/MCSINSHES-geteachITEM', async (req, res) => {
             MCSINSHESdb["GRAPHTYPE"] = masterITEMs[0]['GRAPHTYPE']
           }
 
-          for (let j = 0; j < UNITdata.length; j++) {
+          for (j = 0; j < UNITdata.length; j++) {
             if (findcp[0]['FINAL'][i]['UNIT'] == UNITdata[j]['masterID']) {
               MCSINSHESdb["UNIT"] = UNITdata[j]['UNIT'];
             }
@@ -323,12 +319,21 @@ router.post('/MCSINSHES-geteachITEM', async (req, res) => {
           }
 
           MCSINSHESdb["INTERSEC"] = "";
-          finddbbuffer = null;
           output = 'OK';
           let findpo = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });
           if (findpo.length > 0) {
-                        axios.post('http://127.0.0.1:16010/MCSINSHES-feedback', { "PO": MCSINSHESdb['PO'], "ITEMs": MCSINSHESdb['inspectionItem'] }).catch(() => {});
-
+            request.post(
+              'http://127.0.0.1:16010/MCSINSHES-feedback',
+              { json: { "PO": MCSINSHESdb['PO'], "ITEMs": MCSINSHESdb['inspectionItem'] } },
+              function (error, response, body2) {
+                if (!error && response.statusCode == 200) {
+                  // console.log(body2);
+                  if (body2 === 'OK') {
+                    // output = 'OK';
+                  }
+                }
+              }
+            );
           }
           break;
         }
@@ -361,7 +366,6 @@ router.post('/MCSINSHES-preview', async (req, res) => {
       //-------------------------------------
       try {
         MCSINSHESdb['preview'] = input;
-        finddbbuffer = null;
         output = 'OK';
       }
       catch (err) {
@@ -403,7 +407,6 @@ router.post('/MCSINSHES-confirmdata', async (req, res) => {
 
       MCSINSHESdb['confirmdata'].push(pushdata);
       MCSINSHESdb['preview'] = [];
-      finddbbuffer = null;
       output = 'OK';
     }
   }
@@ -425,8 +428,6 @@ router.post('/MCSINSHES-feedback', async (req, res) => {
   let output = 'NOK';
 
   //-------------------------------------
-  const vf = validate.required(input, 'PO', 'ITEMs');
-  if (validate.check(res, vf)) return;
   if (input["PO"] !== undefined && input["ITEMs"] !== undefined) {
     let feedback = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });
     if (feedback.length > 0 && feedback[0]['FINAL'] != undefined && feedback[0]['FINAL'][NAME_INS] != undefined && feedback[0]['FINAL'][NAME_INS][input["ITEMs"]] != undefined) {
@@ -437,12 +438,12 @@ router.post('/MCSINSHES-feedback', async (req, res) => {
 
       let LISTbuffer = [];
       let ITEMleftVALUEout = [];
-      for (let i = 0; i < oblist.length; i++) {
+      for (i = 0; i < oblist.length; i++) {
         LISTbuffer.push(...ob[oblist[i]])
       }
       MCSINSHESdb["PCSleft"] = `${parseInt(MCSINSHESdb["PCS"]) - oblist.length}`;
       if (MCSINSHESdb['RESULTFORMAT'] === 'Number') {
-        for (let i = 0; i < LISTbuffer.length; i++) {
+        for (i = 0; i < LISTbuffer.length; i++) {
           if (LISTbuffer[i]['PO1'] === 'Mean') {
             ITEMleftVALUEout.push({ "V1": 'Mean', "V2": `${LISTbuffer[i]['PO3']}` })
           } else {
@@ -456,7 +457,7 @@ router.post('/MCSINSHES-feedback', async (req, res) => {
 
       } else if (MCSINSHESdb['RESULTFORMAT'] === 'Text') { //add
 
-        for (let i = 0; i < LISTbuffer.length; i++) {
+        for (i = 0; i < LISTbuffer.length; i++) {
           ITEMleftVALUEout.push({ "V1": `${LISTbuffer[i]['PO1']}`, "V2": `${LISTbuffer[i]['PO2']}` })
         }
 
@@ -467,7 +468,7 @@ router.post('/MCSINSHES-feedback', async (req, res) => {
       // output = 'OK';
       if ((parseInt(MCSINSHESdb["PCS"]) - oblist.length) == 0) {
         //CHECKlist
-        for (let i = 0; i < feedback[0]['CHECKlist'].length; i++) {
+        for (i = 0; i < feedback[0]['CHECKlist'].length; i++) {
           if (input["ITEMs"] === feedback[0]['CHECKlist'][i]['key']) {
             feedback[0]['CHECKlist'][i]['FINISH'] = 'OK';
             feedback[0]['CHECKlist'][i]['timestamp'] = `${Date.now()}`;
@@ -489,7 +490,7 @@ router.post('/MCSINSHES-feedback', async (req, res) => {
 
 
           if (masterITEMs[0]['RESULTFORMAT'] === 'Number') {
-            for (let i = 0; i < LISTbuffer.length; i++) {
+            for (i = 0; i < LISTbuffer.length; i++) {
               if (LISTbuffer[i]['PO1'] === 'Mean') {
                 anslist.push(LISTbuffer[i]['PO3'])
                 anslist_con.push(LISTbuffer[i]['PO5'])
@@ -530,7 +531,7 @@ router.post('/MCSINSHES-feedback', async (req, res) => {
 
         let CHECKlistdataFINISH = [];
 
-        for (let i = 0; i < feedback[0]['CHECKlist'].length; i++) {
+        for (i = 0; i < feedback[0]['CHECKlist'].length; i++) {
           if (feedback[0]['CHECKlist'][i]['FINISH'] !== undefined) {
             if (feedback[0]['CHECKlist'][i]['FINISH'] === 'OK') {
               CHECKlistdataFINISH.push(feedback[0]['CHECKlist'][i]['key'])
@@ -619,11 +620,10 @@ router.post('/MCSINSHES-SETZERO', async (req, res) => {
       "inspectionItemNAME": "",
       "tool": NAME_INS,
       "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
-      "dateupdatevalue": new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }),
+      "dateupdatevalue": day,
       //
       "PIC": "",
     }
-    finddbbuffer = null;
     output = 'OK';
   }
   catch (err) {
@@ -646,7 +646,6 @@ router.post('/MCSINSHES-CLEAR', async (req, res) => {
     MCSINSHESdb['preview'] = [];
     MCSINSHESdb['confirmdata'] = [];
 
-    finddbbuffer = null;
     output = 'OK';
   }
   catch (err) {
@@ -671,7 +670,6 @@ router.post('/MCSINSHES-RESETVALUE', async (req, res) => {
       MCSINSHESdb['confirmdata'].pop();
     }
 
-    finddbbuffer = null;
     output = 'OK';
   }
   catch (err) {
@@ -695,7 +693,7 @@ router.post('/MCSINSHES-FINISH', async (req, res) => {
   if (MCSINSHESdb['RESULTFORMAT'] === 'Number' || MCSINSHESdb['RESULTFORMAT'] === 'Text') {
 
     MCSINSHESdb["value"] = [];
-    for (let i = 0; i < MCSINSHESdb['confirmdata'].length; i++) {
+    for (i = 0; i < MCSINSHESdb['confirmdata'].length; i++) {
       MCSINSHESdb["value"].push({
         "PO1": MCSINSHESdb["inspectionItemNAME"],
         "PO2": MCSINSHESdb['confirmdata'][i]['V1'],
@@ -712,7 +710,7 @@ router.post('/MCSINSHES-FINISH', async (req, res) => {
     if (MCSINSHESdb["value"].length > 0) {
       let mean01 = [];
       let mean02 = [];
-      for (let i = 0; i < MCSINSHESdb["value"].length; i++) {
+      for (i = 0; i < MCSINSHESdb["value"].length; i++) {
         mean01.push(parseFloat(MCSINSHESdb["value"][i]["PO3"]));
         mean02.push(parseFloat(MCSINSHESdb["value"][i]["PO5"]));
       }
@@ -736,14 +734,36 @@ router.post('/MCSINSHES-FINISH', async (req, res) => {
   }
 
   if (MCSINSHESdb['RESULTFORMAT'] === 'Number') {
-        axios.post('http://127.0.0.1:16010/FINISHtoDB', MCSINSHESdb)
-          .then(() => axios.post('http://127.0.0.1:16010/MCSINSHES-feedback',
-            { "PO": MCSINSHESdb['PO'], "ITEMs": MCSINSHESdb['inspectionItem'] }
-          ).catch(() => {}))
-          .catch(() => {});
-        MCSINSHESdb['confirmdata'] = [];
-        MCSINSHESdb['value'] = [];
+    request.post(
+      'http://127.0.0.1:16010/FINISHtoDB',
+      { json: MCSINSHESdb },
+      function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          // console.log(body);
+          // if (body === 'OK') {
+          MCSINSHESdb['confirmdata'] = [];
+          MCSINSHESdb["value"] = [];
+          //------------------------------------------------------------------------------------
 
+          request.post(
+            'http://127.0.0.1:16010/MCSINSHES-feedback',
+            { json: { "PO": MCSINSHESdb['PO'], "ITEMs": MCSINSHESdb['inspectionItem'] } },
+            function (error, response, body2) {
+              if (!error && response.statusCode == 200) {
+                // console.log(body2);
+                // if (body2 === 'OK') {
+                output = 'OK';
+                // }
+              }
+            }
+          );
+
+          //------------------------------------------------------------------------------------
+          // }
+
+        }
+      }
+    );
 
   }
 
@@ -760,7 +780,7 @@ router.post('/MCSINSHES-FINISH-APR', async (req, res) => {
   //-------------------------------------
   let output = 'OK';
 
-  // for (let i = 0; i < parseInt(MCSINSHESdb['PCS']); i++) {
+  // for (i = 0; i < parseInt(MCSINSHESdb['PCS']); i++) {
 
   if (MCSINSHESdb['RESULTFORMAT'] === 'Text' && input["APRitem"] !== undefined && input["APRre"] !== undefined) {
 
@@ -783,14 +803,34 @@ router.post('/MCSINSHES-FINISH-APR', async (req, res) => {
   }
 
   if (MCSINSHESdb['RESULTFORMAT'] === 'Text') {
-        axios.post('http://127.0.0.1:16010/FINISHtoDB', MCSINSHESdb)
-          .then(() => axios.post('http://127.0.0.1:16010/MCSINSHES-feedback',
-            { "PO": MCSINSHESdb['PO'], "ITEMs": MCSINSHESdb['inspectionItem'] }
-          ).catch(() => {}))
-          .catch(() => {});
-        MCSINSHESdb['confirmdata'] = [];
-        MCSINSHESdb['value'] = [];
+    request.post(
+      'http://127.0.0.1:16010/FINISHtoDB',
+      { json: MCSINSHESdb },
+      function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          // console.log(body);
+          // if (body === 'OK') {
+          MCSINSHESdb['confirmdata'] = [];
+          MCSINSHESdb["value"] = [];
+          //------------------------------------------------------------------------------------
+          request.post(
+            'http://127.0.0.1:16010/MCSINSHES-feedback',
+            { json: { "PO": MCSINSHESdb['PO'], "ITEMs": MCSINSHESdb['inspectionItem'] } },
+            function (error, response, body2) {
+              if (!error && response.statusCode == 200) {
+                // console.log(body2);
+                // if (body2 === 'OK') {
+                output = 'OK';
+                // }
+              }
+            }
+          );
+          //------------------------------------------------------------------------------------
+          // }
 
+        }
+      }
+    );
 
   }
   // }
@@ -808,7 +848,7 @@ router.post('/MCSINSHES-FINISH-APR', async (req, res) => {
   //-------------------------------------
   let output = 'OK';
 
-  // for (let i = 0; i < parseInt(MCSINSHESdb['PCS']); i++) {
+  // for (i = 0; i < parseInt(MCSINSHESdb['PCS']); i++) {
 
   if (MCSINSHESdb['RESULTFORMAT'] === 'Text' && input["APRitem"] !== undefined && input["APRre"] !== undefined) {
 
@@ -831,14 +871,34 @@ router.post('/MCSINSHES-FINISH-APR', async (req, res) => {
   }
 
   if (MCSINSHESdb['RESULTFORMAT'] === 'Text') {
-        axios.post('http://127.0.0.1:16010/FINISHtoDB', MCSINSHESdb)
-          .then(() => axios.post('http://127.0.0.1:16010/MCSINSHES-feedback',
-            { "PO": MCSINSHESdb['PO'], "ITEMs": MCSINSHESdb['inspectionItem'] }
-          ).catch(() => {}))
-          .catch(() => {});
-        MCSINSHESdb['confirmdata'] = [];
-        MCSINSHESdb['value'] = [];
+    request.post(
+      'http://127.0.0.1:16010/FINISHtoDB',
+      { json: MCSINSHESdb },
+      function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          // console.log(body);
+          // if (body === 'OK') {
+          MCSINSHESdb['confirmdata'] = [];
+          MCSINSHESdb["value"] = [];
+          //------------------------------------------------------------------------------------
+          request.post(
+            'http://127.0.0.1:16010/MCSINSHES-feedback',
+            { json: { "PO": MCSINSHESdb['PO'], "ITEMs": MCSINSHESdb['inspectionItem'] } },
+            function (error, response, body2) {
+              if (!error && response.statusCode == 200) {
+                // console.log(body2);
+                // if (body2 === 'OK') {
+                output = 'OK';
+                // }
+              }
+            }
+          );
+          //------------------------------------------------------------------------------------
+          // }
 
+        }
+      }
+    );
 
   }
   // }
@@ -859,7 +919,7 @@ router.post('/MCSINSHES-FINISH-IMG', async (req, res) => {
   //-------------------------------------
   let output = 'OK';
 
-  // for (let i = 0; i < parseInt(MCSINSHESdb['PCS']); i++) {
+  // for (i = 0; i < parseInt(MCSINSHESdb['PCS']); i++) {
 
   if ((MCSINSHESdb['RESULTFORMAT'] === 'OCR' || MCSINSHESdb['RESULTFORMAT'] === 'Picture') && input["IMG01"] !== undefined && input["IMG02"] !== undefined && input["IMG03"] !== undefined && input["IMG04"] !== undefined) {
 
@@ -881,14 +941,34 @@ router.post('/MCSINSHES-FINISH-IMG', async (req, res) => {
 
   if (MCSINSHESdb['RESULTFORMAT'] === 'OCR' ||
     MCSINSHESdb['RESULTFORMAT'] === 'Picture') {
-        axios.post('http://127.0.0.1:16010/FINISHtoDB', MCSINSHESdb)
-          .then(() => axios.post('http://127.0.0.1:16010/MCSINSHES-feedback',
-            { "PO": MCSINSHESdb['PO'], "ITEMs": MCSINSHESdb['inspectionItem'] }
-          ).catch(() => {}))
-          .catch(() => {});
-        MCSINSHESdb['confirmdata'] = [];
-        MCSINSHESdb['value'] = [];
+    request.post(
+      'http://127.0.0.1:16010/FINISHtoDB',
+      { json: MCSINSHESdb },
+      function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          // console.log(body);
+          // if (body === 'OK') {
+          MCSINSHESdb['confirmdata'] = [];
+          MCSINSHESdb["value"] = [];
+          //------------------------------------------------------------------------------------
+          request.post(
+            'http://127.0.0.1:16010/MCSINSHES-feedback',
+            { json: { "PO": MCSINSHESdb['PO'], "ITEMs": MCSINSHESdb['inspectionItem'] } },
+            function (error, response, body2) {
+              if (!error && response.statusCode == 200) {
+                // console.log(body2);
+                // if (body2 === 'OK') {
+                output = 'OK';
+                // }
+              }
+            }
+          );
+          //------------------------------------------------------------------------------------
+          // }
 
+        }
+      }
+    );
 
   }
 

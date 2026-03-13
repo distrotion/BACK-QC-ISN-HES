@@ -18,6 +18,8 @@ let MACHINE = 'MACHINE';
 
 //-----------------
 
+const d = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });;
+let day = d;
 
 Number.prototype.pad = function (n) {
   if (n === undefined)
@@ -202,7 +204,7 @@ console.log("---------->")
       return true;
     });
 
-    for (let i = 0; i < find.length; i++) {
+    for (i = 0; i < find.length; i++) {
       //
       // console.log(Object.getOwnPropertyNames(find[i]["FINAL"]));
       let INS = Object.getOwnPropertyNames(find[i]["FINAL"]);
@@ -210,7 +212,7 @@ console.log("---------->")
       console.log(INS);
       // console.log("-------------------" + i)
       let depDATAlist = [];
-      for (let j = 0; j < INS.length; j++) {
+      for (j = 0; j < INS.length; j++) {
         let Item = find[i]["FINAL"][INS[j]];
         let Itemlist = Object.getOwnPropertyNames(find[i]["FINAL"][INS[j]]);
         // console.log(Itemlist);
@@ -335,7 +337,7 @@ router.post('/CopyReport', async (req, res) => {
     if (find.length > 0) {
       let sapdata = find[0][`DATA`];
       let CUSLOTNOd = ``
-      for (let i = 0; i < sapdata.length; i++) {
+      for (i = 0; i < sapdata.length; i++) {
         if (input[`new`] === sapdata[i][`PO`]) {
           newdataHEAD = sapdata[i];
           CUSLOTNOd = CUSLOTNOd + sapdata[i][`CUSLOTNO`] + `,`
@@ -392,7 +394,7 @@ router.post('/CopyReport', async (req, res) => {
               //
               "ReferFrom": input[`original`],
               "dateG": new Date(),
-              "dateGSTR": new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }),
+              "dateGSTR": day,
 
 
             };

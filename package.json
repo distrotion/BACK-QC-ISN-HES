@@ -4,8 +4,7 @@
   "description": "master",
   "main": "server.js",
   "scripts": {
-    "test": "jest tests/",
-    "test:watch": "jest --watch tests/"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "distrotion",
   "license": "ISC",
@@ -18,9 +17,7 @@
     "mongodb": "^4.1.1",
     "mongoose": "^6.0.5",
     "mssql": "^7.2.1",
-    "nodemon": "^2.0.12"
-  },
-  "devDependencies": {
-    "jest": "^30.3.0"
+    "nodemon": "^2.0.12",
+    "request": "^2.88.2"
   }
 }

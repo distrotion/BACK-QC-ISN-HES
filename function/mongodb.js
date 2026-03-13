@@ -1,67 +1,93 @@
 const { MongoClient } = require('mongodb');
+// const url = 'mongodb://127.0.0.1:17020';
 const url = 'mongodb://172.23.10.70:27017';
 
-let client = null;
-
-async function getClient() {
-  if (!client) {
-    client = new MongoClient(url, {
-      maxPoolSize: 10,
-      minPoolSize: 2,
-      serverSelectionTimeoutMS: 5000,
-    });
-    await client.connect();
-  }
-  return client;
-}
+// const client = new MongoClient(url);
+// await client.connect();
+// //   console.log('Connected successfully to server');
 
 exports.insertMany = async (db_input, collection_input, input) => {
-  const c = await getClient();
-  const db = c.db(db_input);
+
+  const client = new MongoClient(url);
+  await client.connect();
+  //   console.log('Connected successfully to server');
+  const db = client.db(db_input);
   const collection = db.collection(collection_input);
-  return await collection.insertMany(input);
+  let res = await collection.insertMany(input);
+
+  await client.close();
+
+  return res;
+
 };
 
 exports.find = async (db_input, collection_input, input) => {
-  const c = await getClient();
-  const db = c.db(db_input);
+
+  const client = new MongoClient(url);
+  await client.connect();
+
+  const db = client.db(db_input);
   const collection = db.collection(collection_input);
-  return await collection.find(input).limit(30000).sort({ "_id": -1 }).toArray();
+  let res = await collection.find(input).limit(30000).sort({ "_id": -1 }).toArray();
+
+  await client.close();
+
+  return res;
 };
 
 exports.findsome = async (db_input, collection_input, input) => {
-  const c = await getClient();
-  const db = c.db(db_input);
+
+  const client = new MongoClient(url);
+  await client.connect();
+
+  const db = client.db(db_input);
   const collection = db.collection(collection_input);
-  return await collection.find(input).limit(30000).sort({ "_id": -1 }).project({ "PO": 1, "CP": 1, "ALL_DONE": 1 }).toArray();
+  let res = await collection.find(input).limit(30000).sort({ "_id": -1 }).project({"PO":1,"CP":1,"ALL_DONE":1}).toArray();
+
+  await client.close();
+
+  return res;
 };
 
-exports.findproject = async (db_input, collection_input, input1, input2) => {
-  const c = await getClient();
-  const db = c.db(db_input);
+exports.findproject = async (db_input, collection_input, input1,input2) => {
+
+  const client = new MongoClient(url);
+  await client.connect();
+
+  const db = client.db(db_input);
   const collection = db.collection(collection_input);
-  return await collection.find(input1).limit(500).sort({ "_id": -1 }).project(input2).toArray();
+  let res = await collection.find(input1).limit(500).sort({ "_id": -1 }).project(input2).toArray();
+
+  await client.close();
+
+  return res;
 };
 
 exports.update = async (db_input, collection_input, input1, input2) => {
-  const c = await getClient();
-  const db = c.db(db_input);
+
+  const client = new MongoClient(url);
+  await client.connect();
+
+  const db = client.db(db_input);
   const collection = db.collection(collection_input);
-  return await collection.updateOne(input1, input2);
+  let res = await collection.updateOne(input1, input2);
+  //updateOne({ a: 3 }, { $set: { b: 1 } });
+
+  await client.close();
+
+  return res;
 };
 
-exports.findSAP = async (urls, db_input, collection_input, input) => {
-  // findSAP uses a custom URL — create a short-lived client for this case
-  const sapClient = new MongoClient(urls, {
-    maxPoolSize: 5,
-    serverSelectionTimeoutMS: 5000,
-  });
-  await sapClient.connect();
-  try {
-    const db = sapClient.db(db_input);
-    const collection = db.collection(collection_input);
-    return await collection.find(input).limit(30000).sort({ "_id": -1 }).toArray();
-  } finally {
-    await sapClient.close();
-  }
+exports.findSAP = async (urls,db_input, collection_input, input) => {
+
+  const client = new MongoClient(urls);
+  await client.connect();
+
+  const db = client.db(db_input);
+  const collection = db.collection(collection_input);
+  let res = await collection.find(input).limit(30000).sort({ "_id": -1 }).toArray();
+
+  await client.close();
+
+  return res;
 };
